@@ -1159,6 +1159,253 @@ body::before {
 
 .sync-dot.online { background: var(--forest-green); }
 .sync-dot.offline { background: var(--coral); }
+
+/* ======= PHOTO PROOF ======= */
+.photo-thumb {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+/* ======= SPY MISSIONS ======= */
+.mission-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.mission-overlay.active {
+  display: flex;
+}
+
+.mission-card {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  max-width: 360px;
+  width: 100%;
+  color: white;
+  box-shadow: 0 0 40px rgba(255,167,38,0.3);
+  animation: missionIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes missionIn {
+  0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.mission-alert {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #FF6B6B;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  animation: missionPulse 1s ease infinite;
+}
+
+@keyframes missionPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.mission-emoji {
+  font-size: 4rem;
+  margin-bottom: 12px;
+}
+
+.mission-text {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.mission-reward {
+  font-size: 1rem;
+  color: #FFD700;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.mission-timer {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 8px;
+}
+
+.mission-timer-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.mission-timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B6B, #FFD700);
+  border-radius: 3px;
+  transition: width 1s linear;
+}
+
+.mission-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.mission-buttons button {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.mission-fab {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B6B, #ee5a24);
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 16px rgba(238,90,36,0.4);
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mission-fab:hover { transform: scale(1.1); }
+.mission-fab:active { transform: scale(0.95); }
+
+/* ======= POWER-UPS ======= */
+.power-up-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.power-up-btn:not(.used):hover { transform: scale(1.2); }
+.power-up-btn:not(.used):active { transform: scale(0.9); }
+.power-up-btn.used { opacity: 0.3; filter: grayscale(1); pointer-events: none; }
+
+/* ======= SECRET ITEMS ======= */
+.secret-section {
+  margin-top: 24px;
+  padding: 16px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 16px;
+  color: white;
+}
+
+.secret-section .section-header {
+  background: transparent;
+  color: #FFD700;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+.secret-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.secret-card.completed {
+  opacity: 0.5;
+}
+
+.secret-card .secret-emoji {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.secret-card .secret-info {
+  flex: 1;
+}
+
+.secret-card .secret-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.secret-card .secret-desc {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
+  margin-top: 2px;
+}
+
+.secret-card .secret-points {
+  font-size: 0.75rem;
+  color: #FFD700;
+  margin-top: 4px;
+}
+
+.secret-claim-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 2px solid #FFD700;
+  background: transparent;
+  color: #FFD700;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ======= DUELS ======= */
+.duel-fab {
+  position: fixed;
+  bottom: 150px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C4DFF, #536DFE);
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 16px rgba(124,77,255,0.4);
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.duel-fab:hover { transform: scale(1.1); }
+.duel-fab:active { transform: scale(0.95); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
@@ -1208,6 +1455,8 @@ body::before {
   <div id="game-items"></div>
 
   <button class="wild-card-fab" onclick="openWildCard()" title="Wild Card!">⭐</button>
+  <button class="mission-fab" onclick="startMission()" title="Spy Mission!">🎯</button>
+  <button class="duel-fab" onclick="startDuel()" title="Spy Duel!">⚔️</button>
   <button class="settings-fab" onclick="openSettings()" title="Settings">⚙️</button>
 </div>
 
@@ -1295,6 +1544,59 @@ body::before {
 
 <!-- ======= SOUND TOGGLE ======= -->
 <button class="sound-toggle" id="sound-toggle" onclick="toggleMute()" title="Toggle Sound">🔊</button>
+
+<!-- ======= PHOTO PROMPT MODAL ======= -->
+<div class="modal-backdrop" id="photo-prompt-modal">
+  <div class="modal" style="text-align:center">
+    <h2>📸 Nice find!</h2>
+    <p style="color:var(--text-medium);margin-bottom:16px;">Take a photo for your trip scrapbook?</p>
+    <input type="file" id="photo-capture" accept="image/*" capture="environment" style="display:none">
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="skipPhoto()">Skip</button>
+      <button class="btn-primary" onclick="takePhoto()">📸 Camera</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= PHOTO VIEWER MODAL ======= -->
+<div class="modal-backdrop" id="photo-viewer-modal" onclick="closePhotoViewer()">
+  <div class="modal" style="padding:8px;background:transparent;box-shadow:none;max-width:90vw">
+    <img id="photo-viewer-img" style="width:100%;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+  </div>
+</div>
+
+<!-- ======= MISSION OVERLAY ======= -->
+<div class="mission-overlay" id="mission-overlay">
+  <div class="mission-card">
+    <div class="mission-alert">🚨 SPY MISSION 🚨</div>
+    <div class="mission-emoji" id="mission-target-emoji"></div>
+    <div class="mission-text">Find a <strong id="mission-target-name"></strong></div>
+    <div class="mission-reward">🏆 DOUBLE POINTS!</div>
+    <div class="mission-timer" id="mission-timer"></div>
+    <div class="mission-timer-bar"><div class="mission-timer-fill" id="mission-timer-fill"></div></div>
+    <div class="mission-buttons">
+      <button class="btn-primary" id="mission-found-btn" onclick="missionFound()">✅ Found it!</button>
+      <button class="btn-secondary" onclick="cancelMission()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= STEAL MODAL ======= -->
+<div class="modal-backdrop" id="steal-modal">
+  <div class="modal">
+    <h2>🦝 Steal a Find!</h2>
+    <p style="text-align:center;color:var(--text-medium);margin-bottom:12px">Pick an item to steal:</p>
+    <div id="steal-items" style="max-height:300px;overflow-y:auto"></div>
+    <div style="margin-top:12px">
+      <button class="btn-secondary" onclick="cancelSteal()" style="width:100%">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= DUEL OVERLAY ======= -->
+<div class="mission-overlay" id="duel-overlay">
+  <div class="mission-card" id="duel-card"></div>
+</div>
 
 <!-- ======= TOAST CONTAINER ======= -->
 <div class="toast" id="toast"></div>
@@ -1386,6 +1688,12 @@ function startFirebaseListener() {
     if (!state.lastRanks) state.lastRanks = [0, 0, 0];
     if (!state.badges) state.badges = { 0: [], 1: [], 2: [] };
     if (!Array.isArray(state.players)) state.players = [];
+    if (!state.photos) state.photos = { roadtrip: {}, dollywood: {} };
+    if (!state.missions) state.missions = { lastMissionTime: null, completedMissions: [] };
+    if (!state.powerUps) state.powerUps = { roadtrip: {}, dollywood: {} };
+    if (!state.revealed) state.revealed = { roadtrip: [], dollywood: [] };
+    if (!state.secretItems) state.secretItems = [];
+    if (!state.duels) state.duels = { completedCount: 0 };
     state.players.forEach((p, i) => {
       if (p.avatarIndex === undefined) p.avatarIndex = i;
       if (!state.badges[i]) state.badges[i] = [];
@@ -1574,6 +1882,51 @@ const MILESTONES = [
   }
 ];
 
+const SPY_MISSIONS = {
+  roadtrip: [
+    { target: 'Bridge', emoji: '🌉', timeLimit: 90 },
+    { target: 'American Flag', emoji: '🇺🇸', timeLimit: 60 },
+    { target: 'River or Creek', emoji: '🏞️', timeLimit: 90 },
+    { target: 'Hay Bales', emoji: '🌾', timeLimit: 120 },
+    { target: 'Water Tower', emoji: '🗼', timeLimit: 90 },
+    { target: 'Big Truck', emoji: '🚛', timeLimit: 60 },
+    { target: 'Bear Statue', emoji: '🐻', timeLimit: 120 },
+    { target: 'Pancake House', emoji: '🥞', timeLimit: 60 }
+  ],
+  dollywood: [
+    { target: 'Roller Coaster', emoji: '🎢', timeLimit: 60 },
+    { target: 'Live Musician', emoji: '🎵', timeLimit: 90 },
+    { target: 'Gift Shop', emoji: '🎁', timeLimit: 60 },
+    { target: 'Butterfly', emoji: '🦋', timeLimit: 120 },
+    { target: 'Wooden Rocking Chair', emoji: '🪑', timeLimit: 90 },
+    { target: 'Someone Eating Funnel Cake', emoji: '🍩', timeLimit: 120 },
+    { target: 'Cowboy Boots', emoji: '🤠', timeLimit: 90 },
+    { target: 'Face Painting', emoji: '🎨', timeLimit: 120 }
+  ]
+};
+
+const POWER_UPS = [
+  { id: 'double', name: 'Double Vision', emoji: '👁️', desc: 'Next find worth 2x points' },
+  { id: 'steal', name: 'Steal', emoji: '🦝', desc: 'Take someone else\'s find' },
+  { id: 'reveal', name: 'Reveal', emoji: '🔮', desc: 'Unlock a mystery item instantly' }
+];
+
+const SECRET_ITEMS = [
+  { id: 'family-selfie', emoji: '🤳', name: 'Family Selfie', desc: 'Take a photo with everyone in it', points: 8 },
+  { id: 'sing-along', emoji: '🎤', name: 'Car Sing-Along', desc: 'Everyone sings a song together', points: 8 },
+  { id: 'wave', emoji: '👋', name: 'Friendly Wave', desc: 'Wave to someone and they wave back', points: 6 },
+  { id: 'snack-share', emoji: '🍿', name: 'Snack Share', desc: 'Share a snack with everyone', points: 6 },
+  { id: 'high-five', emoji: '🙌', name: 'Triple High-Five', desc: 'All 3 players high-five at once', points: 10 },
+  { id: 'funny-face', emoji: '🤪', name: 'Funny Face Photo', desc: 'Take a funny face photo together', points: 8 },
+  { id: 'license-game', emoji: '🚗', name: 'License Plate ABC', desc: 'Find license plates spelling A-B-C', points: 10 },
+  { id: 'nature-quiet', emoji: '🤫', name: '30 Seconds of Silence', desc: 'Everyone stays quiet for 30 seconds', points: 6 }
+];
+
+const DUEL_ITEMS = {
+  roadtrip: ['Red car', 'Blue sign', 'Dog', 'White truck', 'Bird on a wire', 'Green roof'],
+  dollywood: ['Red shirt', 'Balloon', 'Stroller', 'Cowboy hat', 'Someone laughing', 'Ice cream cone']
+};
+
 // ==========================================
 // STATE
 // ==========================================
@@ -1596,7 +1949,13 @@ let state = {
   currentStreak: 0,
   lastRanks: [0, 0, 0],
   badges: { 0: [], 1: [], 2: [] },
-  muted: false
+  muted: false,
+  photos: { roadtrip: {}, dollywood: {} },
+  missions: { lastMissionTime: null, completedMissions: [] },
+  powerUps: { roadtrip: {}, dollywood: {} },
+  revealed: { roadtrip: [], dollywood: [] },
+  secretItems: [],
+  duels: { completedCount: 0 }
 };
 
 function saveState() {
@@ -1619,6 +1978,12 @@ function loadState() {
       if (!state.lastRanks) state.lastRanks = [0, 0, 0];
       if (!state.badges) state.badges = { 0: [], 1: [], 2: [] };
       if (state.muted === undefined) state.muted = false;
+      if (!state.photos) state.photos = { roadtrip: {}, dollywood: {} };
+      if (!state.missions) state.missions = { lastMissionTime: null, completedMissions: [] };
+      if (!state.powerUps) state.powerUps = { roadtrip: {}, dollywood: {} };
+      if (!state.revealed) state.revealed = { roadtrip: [], dollywood: [] };
+      if (!state.secretItems) state.secretItems = [];
+      if (!state.duels) state.duels = { completedCount: 0 };
       // Ensure each player has avatarIndex
       state.players.forEach((p, i) => {
         if (p.avatarIndex === undefined) p.avatarIndex = DEFAULT_PLAYERS[i]?.avatarIndex ?? i;
@@ -1741,12 +2106,14 @@ function selectMode(mode) {
   saveState();
   showScreen('game-screen');
   renderGame();
+  assignPowerUps(mode);
 }
 
 function switchMode(mode) {
   state.currentMode = mode;
   saveState();
   renderGame();
+  assignPowerUps(mode);
 }
 
 function switchModeFromSettings() {
@@ -1815,12 +2182,16 @@ function renderScoreboard() {
         const crown = (maxScore > 0 && pTotal === maxScore) ? '\u{1F451} ' : '';
         const avatar = AVATARS[p.avatarIndex] ? AVATARS[p.avatarIndex].emoji : '🦊';
         const rank = getRank(pTotal);
+        const puData = state.powerUps[state.currentMode]?.[i];
+        const puDef = puData ? POWER_UPS.find(x => x.id === puData.type) : null;
+        const puBtn = puDef ? `<button class="power-up-btn ${puData.used ? 'used' : ''}" onclick="usePowerUp(${i})" title="${puDef.name}: ${puDef.desc}">${puDef.emoji}</button>` : '';
         return `
         <div class="scoreboard-player">
           <span style="font-size:1.1rem">${avatar}</span>
           <span>${crown}${p.name}</span>
           <strong class="scoreboard-score" data-player="${i}" style="font-size:1.1rem;color:${COLORS[p.colorIndex].hex}">${pTotal}</strong>
           <span class="rank-emoji" title="${rank.name}">${rank.emoji}</span>
+          ${puBtn}
         </div>
       `}).join('')}
     </div>
@@ -1898,7 +2269,8 @@ function renderItems() {
         const claimer = state.claims[mode]?.[claimKey];
         const isClaimed = claimer !== undefined && claimer !== null;
         const claimerPlayer = isClaimed ? state.players[claimer] : null;
-        const isMystery = item.mystery && !mysteryOpen && !isClaimed;
+        const isRevealed = state.revealed?.[mode]?.includes(claimKey);
+        const isMystery = item.mystery && !isRevealed && !mysteryOpen && !isClaimed;
 
         if (isMystery) {
           return `
@@ -1910,7 +2282,7 @@ function renderItems() {
           `;
         }
 
-        const justRevealed = item.mystery && mysteryOpen && !isClaimed;
+        const justRevealed = item.mystery && (mysteryOpen || isRevealed) && !isClaimed;
 
         return `
           <div class="item-card ${isClaimed ? 'claimed' : ''} ${justRevealed ? 'mystery-revealed' : ''}" data-key="${claimKey}">
@@ -1923,6 +2295,7 @@ function renderItems() {
                 <div class="check">✅</div>
                 <div class="claimer-name" style="color:${COLORS[claimerPlayer.colorIndex].hex}">${AVATARS[claimerPlayer.avatarIndex]?.emoji || ''} ${claimerPlayer.name}</div>
                 <button class="unclaim-btn" onclick="unclaimItem('${claimKey}', ${item.points}, ${claimer})">undo</button>
+                ${state.photos[mode]?.[claimKey] ? `<img class="photo-thumb" src="${state.photos[mode][claimKey]}" onclick="event.stopPropagation();viewPhoto('${mode}','${claimKey}')">` : ''}
               </div>
             ` : `
               <div class="claim-buttons">
@@ -1939,6 +2312,36 @@ function renderItems() {
       }).join('')}
     </div>
   `}).join('');
+
+  // Secret Items section
+  const secretHTML = SECRET_ITEMS.map(si => {
+    const completed = state.secretItems?.find(s => s.id === si.id);
+    const completedBy = completed ? state.players[completed.claimedBy] : null;
+    return `
+      <div class="secret-card ${completed ? 'completed' : ''}">
+        <div class="secret-emoji">${si.emoji}</div>
+        <div class="secret-info">
+          <div class="secret-name">${si.name}</div>
+          <div class="secret-desc">${si.desc}</div>
+          <div class="secret-points">${si.points} pts</div>
+        </div>
+        ${completed
+          ? `<span style="color:#66BB6A">✅ ${completedBy?.name || ''}</span>`
+          : `<button class="secret-claim-btn" onclick="claimSecret('${si.id}')">We did it!</button>`
+        }
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML += `
+    <div class="secret-section">
+      <div class="section-header" style="color:#FFD700;background:transparent">
+        <span>🕵️ Secret Missions</span>
+        <span style="margin-left:auto;font-size:0.8rem;">${state.secretItems?.length || 0}/${SECRET_ITEMS.length}</span>
+      </div>
+      ${secretHTML}
+    </div>
+  `;
 }
 
 function claimItem(claimKey, points, playerIdx, btnEl) {
@@ -2016,11 +2419,25 @@ function claimItem(claimKey, points, playerIdx, btnEl) {
   // Check badges
   checkBadges(playerIdx);
 
+  // Check for Double Vision power-up
+  const pu = state.powerUps[mode]?.[playerIdx];
+  if (pu && pu.type === 'double' && pu.active && !pu.used) {
+    state.players[playerIdx].scores[mode] += points;
+    state.powerUps[mode][playerIdx].used = true;
+    state.powerUps[mode][playerIdx].active = false;
+    saveState();
+    renderGame();
+    showToast('👁️ DOUBLE VISION! 2x points!');
+  }
+
   // Check if mystery items got unlocked (play sound)
   checkMysteryUnlocks(mode);
 
   checkMilestones();
   checkModeComplete();
+
+  // Show photo prompt (item is already claimed)
+  showPhotoPrompt(mode, claimKey);
 }
 
 function unclaimItem(claimKey, points, playerIdx) {
@@ -2315,7 +2732,13 @@ function doReset() {
     currentStreak: 0,
     lastRanks: [0, 0, 0],
     badges: { 0: [], 1: [], 2: [] },
-    muted: false
+    muted: false,
+    photos: { roadtrip: {}, dollywood: {} },
+    missions: { lastMissionTime: null, completedMissions: [] },
+    powerUps: { roadtrip: {}, dollywood: {} },
+    revealed: { roadtrip: [], dollywood: [] },
+    secretItems: [],
+    duels: { completedCount: 0 }
   };
   window._modeComplete_roadtrip = false;
   window._modeComplete_dollywood = false;
@@ -2709,6 +3132,510 @@ function showToast(message) {
   _toastTimeout = setTimeout(() => {
     toast.classList.remove('show');
   }, 3000);
+}
+
+// ==========================================
+// FEATURE 1: PHOTO PROOF
+// ==========================================
+function resizePhoto(file, maxWidth, quality, callback) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, maxWidth / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showPhotoPrompt(mode, claimKey) {
+  window._pendingPhotoMode = mode;
+  window._pendingPhotoClaimKey = claimKey;
+  document.getElementById('photo-prompt-modal').classList.add('active');
+}
+
+function skipPhoto() {
+  window._pendingPhotoMode = null;
+  window._pendingPhotoClaimKey = null;
+  document.getElementById('photo-prompt-modal').classList.remove('active');
+}
+
+function takePhoto() {
+  const input = document.getElementById('photo-capture');
+  input.value = '';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    resizePhoto(file, 200, 0.5, (dataUrl) => {
+      const mode = window._pendingPhotoMode;
+      const claimKey = window._pendingPhotoClaimKey;
+      if (mode && claimKey) {
+        if (!state.photos[mode]) state.photos[mode] = {};
+        state.photos[mode][claimKey] = dataUrl;
+        saveState();
+        renderGame();
+      }
+      window._pendingPhotoMode = null;
+      window._pendingPhotoClaimKey = null;
+      document.getElementById('photo-prompt-modal').classList.remove('active');
+    });
+  };
+  input.click();
+}
+
+function viewPhoto(mode, claimKey) {
+  const url = state.photos[mode]?.[claimKey];
+  if (!url) return;
+  document.getElementById('photo-viewer-img').src = url;
+  document.getElementById('photo-viewer-modal').classList.add('active');
+}
+
+function closePhotoViewer() {
+  document.getElementById('photo-viewer-modal').classList.remove('active');
+}
+
+// ==========================================
+// FEATURE 2: SPY MISSIONS
+// ==========================================
+let activeMission = null;
+let missionInterval = null;
+
+function startMission() {
+  const mode = state.currentMode;
+  const available = SPY_MISSIONS[mode].filter((m, i) =>
+    !state.missions?.completedMissions?.includes(mode + '-' + i)
+  );
+  if (available.length === 0) {
+    showToast('🎯 All missions completed!');
+    return;
+  }
+
+  const pick = available[Math.floor(Math.random() * available.length)];
+  const missionIndex = SPY_MISSIONS[mode].indexOf(pick);
+
+  activeMission = {
+    ...pick,
+    index: missionIndex,
+    mode: mode,
+    timeRemaining: pick.timeLimit,
+    startTime: Date.now()
+  };
+
+  document.getElementById('mission-target-emoji').textContent = pick.emoji;
+  document.getElementById('mission-target-name').textContent = pick.target;
+  document.getElementById('mission-timer').textContent = pick.timeLimit;
+  document.getElementById('mission-timer-fill').style.width = '100%';
+  document.getElementById('mission-found-btn').style.display = 'inline-block';
+  document.getElementById('mission-overlay').classList.add('active');
+
+  if (SoundFX && !state.muted) SoundFX.unlock();
+
+  missionInterval = setInterval(() => {
+    if (!activeMission) return;
+    const elapsed = Math.floor((Date.now() - activeMission.startTime) / 1000);
+    const remaining = Math.max(0, activeMission.timeLimit - elapsed);
+    activeMission.timeRemaining = remaining;
+
+    document.getElementById('mission-timer').textContent = remaining;
+    document.getElementById('mission-timer-fill').style.width =
+      (remaining / activeMission.timeLimit * 100) + '%';
+
+    if (remaining <= 10) {
+      document.getElementById('mission-timer').style.color = '#FF6B6B';
+    } else {
+      document.getElementById('mission-timer').style.color = 'white';
+    }
+
+    if (remaining <= 0) {
+      clearInterval(missionInterval);
+      missionFailed();
+    }
+  }, 1000);
+}
+
+function missionFound() {
+  if (!activeMission) return;
+  clearInterval(missionInterval);
+
+  const overlay = document.getElementById('mission-overlay');
+  const card = overlay.querySelector('.mission-card');
+  card.innerHTML = `
+    <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+    <h2 style="color:#FFD700;margin-bottom:16px">MISSION COMPLETE!</h2>
+    <p style="margin-bottom:16px">Who found it?</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px">
+      ${state.players.map((p, i) => `
+        <button onclick="awardMission(${i})" style="padding:12px 18px;border-radius:12px;border:2px solid ${COLORS[p.colorIndex].hex};background:transparent;color:white;font-weight:700;font-size:1rem;cursor:pointer">
+          ${AVATARS[p.avatarIndex].emoji} ${p.name}
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  launchConfetti(40);
+  if (SoundFX && !state.muted) SoundFX.milestone();
+}
+
+function awardMission(playerIdx) {
+  const mode = activeMission.mode;
+  const mission = activeMission;
+
+  state.players[playerIdx].scores[mode] = (state.players[playerIdx].scores[mode] || 0) + 6;
+
+  if (!state.missions) state.missions = { lastMissionTime: null, completedMissions: [] };
+  state.missions.completedMissions.push(mode + '-' + mission.index);
+  state.missions.lastMissionTime = Date.now();
+
+  saveState();
+
+  closeMissionOverlay();
+  renderGame();
+  showToast(`${AVATARS[state.players[playerIdx].avatarIndex].emoji} ${state.players[playerIdx].name} earned 6 bonus points!`);
+  checkMilestones();
+  checkBadges(playerIdx);
+}
+
+function missionFailed() {
+  const overlay = document.getElementById('mission-overlay');
+  const card = overlay.querySelector('.mission-card');
+  card.innerHTML = `
+    <div style="font-size:3rem;margin-bottom:12px">⏰</div>
+    <h2 style="color:#FF6B6B;margin-bottom:16px">TIME'S UP!</h2>
+    <p style="margin-bottom:20px;color:rgba(255,255,255,0.7)">Better luck next mission!</p>
+    <button onclick="closeMissionOverlay()" style="padding:12px 24px;border-radius:12px;border:none;background:#4FC3F7;color:white;font-weight:700;font-size:1rem;cursor:pointer">OK</button>
+  `;
+  activeMission = null;
+}
+
+function cancelMission() {
+  clearInterval(missionInterval);
+  activeMission = null;
+  closeMissionOverlay();
+}
+
+function closeMissionOverlay() {
+  document.getElementById('mission-overlay').classList.remove('active');
+  setTimeout(() => {
+    document.getElementById('mission-overlay').querySelector('.mission-card').innerHTML = `
+      <div class="mission-alert">🚨 SPY MISSION 🚨</div>
+      <div class="mission-emoji" id="mission-target-emoji"></div>
+      <div class="mission-text">Find a <strong id="mission-target-name"></strong></div>
+      <div class="mission-reward">🏆 DOUBLE POINTS!</div>
+      <div class="mission-timer" id="mission-timer"></div>
+      <div class="mission-timer-bar"><div class="mission-timer-fill" id="mission-timer-fill"></div></div>
+      <div class="mission-buttons">
+        <button class="btn-primary" id="mission-found-btn" onclick="missionFound()">✅ Found it!</button>
+        <button class="btn-secondary" onclick="cancelMission()">Cancel</button>
+      </div>
+    `;
+  }, 300);
+  activeMission = null;
+}
+
+// ==========================================
+// FEATURE 3: POWER-UPS
+// ==========================================
+function assignPowerUps(mode) {
+  if (!state.powerUps[mode]) state.powerUps[mode] = {};
+  if (Object.keys(state.powerUps[mode]).length >= state.players.length) return;
+
+  const types = ['double', 'steal', 'reveal'];
+  for (let i = types.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [types[i], types[j]] = [types[j], types[i]];
+  }
+
+  state.players.forEach((p, i) => {
+    if (!state.powerUps[mode][i]) {
+      state.powerUps[mode][i] = { type: types[i % types.length], used: false, active: false };
+    }
+  });
+
+  saveState();
+
+  state.players.forEach((p, i) => {
+    const pu = POWER_UPS.find(x => x.id === state.powerUps[mode][i].type);
+    setTimeout(() => {
+      showToast(`${AVATARS[p.avatarIndex].emoji} ${p.name} got ${pu.emoji} ${pu.name}!`);
+    }, i * 800);
+  });
+}
+
+function usePowerUp(playerIdx) {
+  const mode = state.currentMode;
+  const pu = state.powerUps[mode]?.[playerIdx];
+  if (!pu || pu.used) return;
+
+  const puDef = POWER_UPS.find(x => x.id === pu.type);
+
+  if (pu.type === 'double') {
+    pu.active = true;
+    saveState();
+    renderGame();
+    showToast(`👁️ ${state.players[playerIdx].name}'s next find is worth DOUBLE!`);
+    if (SoundFX && !state.muted) SoundFX.unlock();
+  }
+
+  else if (pu.type === 'steal') {
+    const stealItems = [];
+    const items = getItems(mode);
+    ['easy', 'medium', 'hard'].forEach(tier => {
+      (items[tier] || []).forEach((item, idx) => {
+        const ck = `${idx}-${tier}`;
+        const claimer = state.claims[mode]?.[ck];
+        if (claimer !== undefined && claimer !== null && claimer !== playerIdx) {
+          stealItems.push({ claimKey: ck, item, claimer, tier });
+        }
+      });
+    });
+
+    if (stealItems.length === 0) {
+      showToast('🦝 Nothing to steal yet!');
+      return;
+    }
+
+    const container = document.getElementById('steal-items');
+    container.innerHTML = stealItems.map(si => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #eee;cursor:pointer" onclick="executeSteal(${playerIdx}, '${si.claimKey}', ${si.item.points}, ${si.claimer})">
+        <span style="font-size:1.5rem">${si.item.emoji}</span>
+        <div style="flex:1">
+          <div style="font-weight:700">${si.item.name}</div>
+          <div style="font-size:0.8rem;color:var(--text-medium)">${si.item.points} pts — ${state.players[si.claimer].name}'s</div>
+        </div>
+        <span style="color:var(--coral);font-weight:700">Steal →</span>
+      </div>
+    `).join('');
+
+    document.getElementById('steal-modal').classList.add('active');
+  }
+
+  else if (pu.type === 'reveal') {
+    const items = getItems(mode);
+    let revealed = false;
+    ['easy', 'medium', 'hard'].forEach(tier => {
+      if (revealed) return;
+      (items[tier] || []).forEach((item, idx) => {
+        if (revealed) return;
+        if (!item.mystery) return;
+        const ck = `${idx}-${tier}`;
+        if (state.revealed[mode]?.includes(ck)) return;
+        if (state.claims[mode]?.[ck] !== undefined) return;
+
+        if (!state.revealed[mode]) state.revealed[mode] = [];
+        state.revealed[mode].push(ck);
+        revealed = true;
+      });
+    });
+
+    if (revealed) {
+      pu.used = true;
+      saveState();
+      renderGame();
+      if (SoundFX && !state.muted) SoundFX.unlock();
+      showToast(`🔮 ${state.players[playerIdx].name} revealed a mystery item!`);
+      launchConfetti(15);
+    } else {
+      showToast('🔮 No mystery items left to reveal!');
+    }
+  }
+}
+
+function executeSteal(thiefIdx, claimKey, points, victimIdx) {
+  const mode = state.currentMode;
+
+  state.claims[mode][claimKey] = thiefIdx;
+  state.players[victimIdx].scores[mode] = Math.max(0, (state.players[victimIdx].scores[mode] || 0) - points);
+  state.players[thiefIdx].scores[mode] = (state.players[thiefIdx].scores[mode] || 0) + points;
+
+  state.powerUps[mode][thiefIdx].used = true;
+
+  saveState();
+  document.getElementById('steal-modal').classList.remove('active');
+  renderGame();
+
+  if (SoundFX && !state.muted) SoundFX.streak();
+  showToast(`🦝 ${state.players[thiefIdx].name} stole from ${state.players[victimIdx].name}!`);
+}
+
+function cancelSteal() {
+  document.getElementById('steal-modal').classList.remove('active');
+}
+
+// ==========================================
+// FEATURE 4: SECRET ITEMS
+// ==========================================
+function claimSecret(secretId) {
+  const si = SECRET_ITEMS.find(s => s.id === secretId);
+  if (!si) return;
+  if (state.secretItems?.find(s => s.id === secretId)) return;
+
+  const overlay = document.getElementById('milestone-popup');
+  const content = document.getElementById('milestone-content');
+  content.innerHTML = `
+    <div class="ms-emoji">${si.emoji}</div>
+    <h2>${si.name}!</h2>
+    <p style="margin-bottom:16px">Who led this mission?</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      ${state.players.map((p, i) => `
+        <button onclick="awardSecret('${secretId}', ${i})" style="padding:10px 16px;border-radius:10px;border:none;background:${COLORS[p.colorIndex].hex};color:white;font-weight:700;cursor:pointer;font-size:0.95rem">
+          ${AVATARS[p.avatarIndex].emoji} ${p.name}
+        </button>
+      `).join('')}
+    </div>
+    <button onclick="closeMilestone()" style="margin-top:12px;padding:8px 20px;border:none;background:#eee;border-radius:8px;cursor:pointer;font-size:0.9rem">Cancel</button>
+  `;
+  overlay.classList.add('active');
+}
+
+function awardSecret(secretId, playerIdx) {
+  const si = SECRET_ITEMS.find(s => s.id === secretId);
+  if (!si) return;
+
+  if (!state.secretItems) state.secretItems = [];
+  state.secretItems.push({ id: secretId, claimedBy: playerIdx, timestamp: Date.now() });
+
+  const mode = state.currentMode;
+  state.players[playerIdx].scores[mode] = (state.players[playerIdx].scores[mode] || 0) + si.points;
+
+  saveState();
+  closeMilestone();
+  renderGame();
+
+  launchConfetti(30);
+  if (SoundFX && !state.muted) SoundFX.milestone();
+  showToast(`${AVATARS[state.players[playerIdx].avatarIndex].emoji} ${state.players[playerIdx].name} completed a secret mission! +${si.points} pts`);
+
+  checkMilestones();
+  checkBadges(playerIdx);
+}
+
+// ==========================================
+// FEATURE 5: HEAD-TO-HEAD DUELS
+// ==========================================
+let activeDuel = null;
+let duelInterval = null;
+
+function startDuel() {
+  const indices = [0, 1, 2];
+  const p1 = indices.splice(Math.floor(Math.random() * indices.length), 1)[0];
+  const p2 = indices.splice(Math.floor(Math.random() * indices.length), 1)[0];
+
+  const mode = state.currentMode;
+  const items = DUEL_ITEMS[mode];
+  const item = items[Math.floor(Math.random() * items.length)];
+
+  activeDuel = {
+    player1: p1,
+    player2: p2,
+    item: item,
+    timeLimit: 45,
+    startTime: Date.now()
+  };
+
+  const card = document.getElementById('duel-card');
+  card.innerHTML = `
+    <div style="font-size:1.1rem;font-weight:800;color:#7C4DFF;letter-spacing:2px;margin-bottom:16px;animation:missionPulse 1s ease infinite">⚔️ SPY DUEL ⚔️</div>
+    <div style="display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:16px">
+      <div style="text-align:center">
+        <div style="font-size:2rem">${AVATARS[state.players[p1].avatarIndex].emoji}</div>
+        <div style="font-weight:700;color:${COLORS[state.players[p1].colorIndex].hex}">${state.players[p1].name}</div>
+      </div>
+      <div style="font-size:1.5rem;font-weight:800">VS</div>
+      <div style="text-align:center">
+        <div style="font-size:2rem">${AVATARS[state.players[p2].avatarIndex].emoji}</div>
+        <div style="font-weight:700;color:${COLORS[state.players[p2].colorIndex].hex}">${state.players[p2].name}</div>
+      </div>
+    </div>
+    <div style="font-size:1.2rem;margin-bottom:8px">First to spot a...</div>
+    <div style="font-size:1.8rem;font-weight:800;color:#FFD700;margin-bottom:16px">${item}</div>
+    <div style="font-size:0.9rem;color:#FFD700;margin-bottom:16px">🏆 Winner gets 5 bonus points!</div>
+    <div class="mission-timer" id="duel-timer">${activeDuel.timeLimit}</div>
+    <div class="mission-timer-bar"><div class="mission-timer-fill" id="duel-timer-fill" style="width:100%;background:linear-gradient(90deg,#7C4DFF,#536DFE)"></div></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+      <button onclick="duelWin(${p1})" style="padding:12px 20px;border-radius:12px;border:2px solid ${COLORS[state.players[p1].colorIndex].hex};background:transparent;color:white;font-weight:700;font-size:1rem;cursor:pointer">
+        ${AVATARS[state.players[p1].avatarIndex].emoji} ${state.players[p1].name}!
+      </button>
+      <button onclick="duelWin(${p2})" style="padding:12px 20px;border-radius:12px;border:2px solid ${COLORS[state.players[p2].colorIndex].hex};background:transparent;color:white;font-weight:700;font-size:1rem;cursor:pointer">
+        ${AVATARS[state.players[p2].avatarIndex].emoji} ${state.players[p2].name}!
+      </button>
+    </div>
+    <button onclick="cancelDuel()" style="margin-top:12px;padding:8px 16px;border:none;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border-radius:8px;cursor:pointer;font-size:0.85rem">Cancel</button>
+  `;
+
+  document.getElementById('duel-overlay').classList.add('active');
+  if (SoundFX && !state.muted) SoundFX.unlock();
+
+  duelInterval = setInterval(() => {
+    if (!activeDuel) return;
+    const elapsed = Math.floor((Date.now() - activeDuel.startTime) / 1000);
+    const remaining = Math.max(0, activeDuel.timeLimit - elapsed);
+
+    const timer = document.getElementById('duel-timer');
+    const fill = document.getElementById('duel-timer-fill');
+    if (timer) timer.textContent = remaining;
+    if (fill) fill.style.width = (remaining / activeDuel.timeLimit * 100) + '%';
+
+    if (remaining <= 10 && timer) timer.style.color = '#FF6B6B';
+
+    if (remaining <= 0) {
+      clearInterval(duelInterval);
+      duelTimeout();
+    }
+  }, 1000);
+}
+
+function duelWin(playerIdx) {
+  clearInterval(duelInterval);
+
+  const mode = state.currentMode;
+  state.players[playerIdx].scores[mode] = (state.players[playerIdx].scores[mode] || 0) + 5;
+  if (!state.duels) state.duels = { completedCount: 0 };
+  state.duels.completedCount++;
+  saveState();
+
+  const card = document.getElementById('duel-card');
+  card.innerHTML = `
+    <div style="font-size:3rem;margin-bottom:12px">🏆</div>
+    <h2 style="color:#FFD700;margin-bottom:8px">${state.players[playerIdx].name} WINS!</h2>
+    <div style="font-size:2rem;margin-bottom:12px">${AVATARS[state.players[playerIdx].avatarIndex].emoji}</div>
+    <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">+5 bonus points!</p>
+    <button onclick="closeDuel()" style="padding:12px 24px;border-radius:12px;border:none;background:#7C4DFF;color:white;font-weight:700;font-size:1rem;cursor:pointer">Nice!</button>
+  `;
+
+  launchConfetti(25);
+  if (SoundFX && !state.muted) SoundFX.rankUp();
+
+  renderGame();
+  checkMilestones();
+  checkBadges(playerIdx);
+  activeDuel = null;
+}
+
+function duelTimeout() {
+  const card = document.getElementById('duel-card');
+  card.innerHTML = `
+    <div style="font-size:3rem;margin-bottom:12px">⏰</div>
+    <h2 style="color:#FF6B6B;margin-bottom:12px">DRAW!</h2>
+    <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">Nobody found it in time!</p>
+    <button onclick="closeDuel()" style="padding:12px 24px;border-radius:12px;border:none;background:#7C4DFF;color:white;font-weight:700;font-size:1rem;cursor:pointer">OK</button>
+  `;
+  activeDuel = null;
+}
+
+function cancelDuel() {
+  clearInterval(duelInterval);
+  activeDuel = null;
+  closeDuel();
+}
+
+function closeDuel() {
+  document.getElementById('duel-overlay').classList.remove('active');
 }
 
 // ==========================================
