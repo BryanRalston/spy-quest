@@ -453,7 +453,7 @@ body::before {
   border: 2px solid;
   background: transparent;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: inherit;
   transition: all 0.2s;
@@ -486,7 +486,7 @@ body::before {
 
 .claimed-overlay .check {
   font-size: 2.2rem;
-  animation: claimBounce 0.5s ease;
+  animation: checkSpin 0.5s ease;
 }
 
 .claimed-overlay .claimer-name {
@@ -802,6 +802,268 @@ body::before {
   100% { opacity: 0; }
 }
 
+/* Card claim bounce */
+@keyframes cardClaim {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Check spin-in */
+@keyframes checkSpin {
+  0% { transform: rotate(0deg) scale(0); }
+  60% { transform: rotate(360deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Score jump */
+@keyframes scoreJump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); color: #FFD700; }
+  100% { transform: scale(1); }
+}
+
+.pulse-score {
+  animation: scoreJump 0.4s ease;
+}
+
+/* Mystery item pulse */
+@keyframes mysteryPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+/* Reveal flip */
+@keyframes revealFlip {
+  0% { transform: rotateY(90deg); opacity: 0; }
+  100% { transform: rotateY(0); opacity: 1; }
+}
+
+/* NEW badge fade */
+@keyframes newBadgeFade {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Streak fly */
+@keyframes streakFly {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  20% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+  80% { transform: translateY(-120px) scale(1); opacity: 1; }
+  100% { transform: translateY(-180px) scale(0.8); opacity: 0; }
+}
+
+/* Emoji rain */
+@keyframes emojiRain {
+  0% { transform: translateY(-30px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.emoji-rain-piece {
+  position: fixed;
+  top: -40px;
+  font-size: 1.6rem;
+  pointer-events: none;
+  z-index: 2000;
+  animation: emojiRain linear forwards;
+}
+
+/* Mystery card styling */
+.item-card.mystery-locked {
+  background: #E8E8E8;
+  animation: mysteryPulse 2s ease-in-out infinite;
+  cursor: default;
+}
+
+.item-card.mystery-locked .item-emoji {
+  font-size: 3rem;
+}
+
+.item-card.mystery-locked .item-name {
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.item-card.mystery-revealed {
+  animation: revealFlip 0.6s ease;
+}
+
+.new-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--coral);
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  animation: newBadgeFade 5s ease forwards;
+  pointer-events: none;
+}
+
+/* Streak animation */
+.streak-fly {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%);
+  font-size: 3rem;
+  font-weight: 800;
+  z-index: 1500;
+  pointer-events: none;
+  text-shadow: 0 0 20px rgba(255,160,0,0.6), 0 0 40px rgba(255,100,0,0.3);
+  animation: streakFly 1.4s ease-out forwards;
+  white-space: nowrap;
+}
+
+/* Avatar picker */
+.avatar-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.avatar-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid #E0E0E0;
+  background: var(--bg-white);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-btn:hover, .avatar-btn:active {
+  transform: scale(1.15);
+}
+
+.avatar-btn.selected {
+  border-color: var(--text-dark);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
+  background: #F0F0F0;
+}
+
+.avatar-btn.taken {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Sound toggle */
+.sound-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.06);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 300;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sound-toggle:hover { background: rgba(0,0,0,0.1); }
+
+/* Badge grid */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.badge-item {
+  text-align: center;
+  padding: 10px 4px;
+  border-radius: 12px;
+  background: #F5F5F5;
+}
+
+.badge-item.earned {
+  background: linear-gradient(135deg, #FFF9C4, #FFF3E0);
+  box-shadow: 0 2px 8px rgba(255,213,79,0.3);
+}
+
+.badge-item.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.badge-item .badge-emoji {
+  font-size: 1.8rem;
+  display: block;
+}
+
+.badge-item .badge-name {
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.badge-item .badge-desc {
+  font-size: 0.55rem;
+  color: var(--text-medium);
+  margin-top: 1px;
+}
+
+/* Badge section in settings */
+.badge-section {
+  margin-top: 16px;
+  text-align: left;
+}
+
+.badge-section h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.badge-player-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  font-weight: 700;
+  font-size: 0.95rem;
+  z-index: 1500;
+  transition: top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.toast.show {
+  top: 16px;
+}
+
+/* Rank display in scoreboard */
+.rank-emoji {
+  font-size: 0.85rem;
+  margin-left: 2px;
+}
+
 /* Settings panel */
 .settings-panel { text-align: center; }
 .settings-panel h2 { margin-bottom: 20px; }
@@ -860,7 +1122,7 @@ body::before {
   .scoreboard-players { gap: 10px; }
   .scoreboard-player { font-size: 0.8rem; }
   .item-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-  .claim-btn { width: 38px; height: 38px; font-size: 0.6rem; }
+  .claim-btn { width: 38px; height: 38px; font-size: 1rem; }
 }
 
 @media (min-width: 600px) {
@@ -951,12 +1213,17 @@ body::before {
   <div class="modal settings-panel">
     <h2>⚙️ Settings</h2>
     <button class="settings-option" onclick="showWildLog()">📝 Wild Card Log</button>
+    <button class="settings-option" onclick="showBadges()">🏅 Badges</button>
     <button class="settings-option" onclick="switchModeFromSettings()">🔄 Switch Mode</button>
     <button class="settings-option" onclick="showTripSummary()">📊 Trip Summary</button>
     <button class="settings-option danger" onclick="confirmReset()">🗑️ Reset Game</button>
     <div class="wild-log-section" id="wild-log-display" style="display:none">
       <h3>Wild Card Memories</h3>
       <div id="wild-log-entries"></div>
+    </div>
+    <div class="badge-section" id="badge-display" style="display:none">
+      <h3>🏅 Badge Collection</h3>
+      <div id="badge-content"></div>
     </div>
     <div class="wild-log-section" id="trip-summary-display" style="display:none">
       <h3>Trip Stats</h3>
@@ -988,6 +1255,12 @@ body::before {
 <!-- ======= CONFETTI CONTAINER ======= -->
 <div class="confetti-container" id="confetti-container"></div>
 
+<!-- ======= SOUND TOGGLE ======= -->
+<button class="sound-toggle" id="sound-toggle" onclick="toggleMute()" title="Toggle Sound">🔊</button>
+
+<!-- ======= TOAST CONTAINER ======= -->
+<div class="toast" id="toast"></div>
+
 <script>
 // ==========================================
 // DATA
@@ -1001,10 +1274,37 @@ const COLORS = [
   { name: 'Golden', hex: '#FFD54F' }
 ];
 
+const AVATARS = [
+  { emoji: '🦊', name: 'Fox' },
+  { emoji: '🐻', name: 'Bear' },
+  { emoji: '🦅', name: 'Eagle' },
+  { emoji: '🐺', name: 'Wolf' },
+  { emoji: '🦉', name: 'Owl' },
+  { emoji: '🦋', name: 'Butterfly' }
+];
+
+const RANKS = [
+  { name: 'Scout', emoji: '🔰', minPoints: 0 },
+  { name: 'Ranger', emoji: '🌲', minPoints: 10 },
+  { name: 'Explorer', emoji: '🧭', minPoints: 25 },
+  { name: 'Spy Master', emoji: '🕵️', minPoints: 50 }
+];
+
+const BADGES = [
+  { id: 'first-find', name: 'First Find', emoji: '🎯', desc: 'Claim your very first item' },
+  { id: 'eagle-eye', name: 'Eagle Eye', emoji: '🦅', desc: 'Find a 5-star item' },
+  { id: 'streak-master', name: 'Streak Master', emoji: '🔥', desc: 'Get a 3-item streak' },
+  { id: 'wild-one', name: 'Wild One', emoji: '⭐', desc: 'Get a wild card approved' },
+  { id: 'halfway', name: 'Halfway There', emoji: '📍', desc: 'Find 50% of items in any mode' },
+  { id: 'ten-club', name: 'Perfect 10', emoji: '🔟', desc: 'Reach 10 points' },
+  { id: 'team-spirit', name: 'Team Spirit', emoji: '🤝', desc: 'All 3 players claim in same tier' },
+  { id: 'completionist', name: 'Completionist', emoji: '🏆', desc: 'Find every item in a mode' }
+];
+
 const DEFAULT_PLAYERS = [
-  { name: 'Alex', colorIndex: 0 },
-  { name: 'Julia', colorIndex: 3 },
-  { name: 'Evie', colorIndex: 1 }
+  { name: 'Alex', colorIndex: 0, avatarIndex: 0 },
+  { name: 'Julia', colorIndex: 3, avatarIndex: 5 },
+  { name: 'Evie', colorIndex: 1, avatarIndex: 2 }
 ];
 
 const ROAD_TRIP_ITEMS = {
@@ -1019,8 +1319,8 @@ const ROAD_TRIP_ITEMS = {
     { emoji: '🌉', name: 'Bridge', points: 1 },
     { emoji: '⛰️', name: 'Mountain View', points: 1 },
     { emoji: '🚧', name: 'Road Construction', points: 1 },
-    { emoji: '🥞', name: 'Pancake House', points: 1 },
-    { emoji: '🏎️', name: 'Go-Kart Track', points: 1 }
+    { emoji: '🥞', name: 'Pancake House', points: 1, mystery: true },
+    { emoji: '🏎️', name: 'Go-Kart Track', points: 1, mystery: true }
   ],
   medium: [
     { emoji: '🏡', name: 'Log Cabin', points: 3 },
@@ -1033,8 +1333,8 @@ const ROAD_TRIP_ITEMS = {
     { emoji: '🪨', name: '"See Rock City" Sign', points: 3 },
     { emoji: '🦌', name: 'Deer Crossing Sign', points: 3 },
     { emoji: '🐕', name: 'Pickup Truck with Dog', points: 3 },
-    { emoji: '🎡', name: 'The Island Ferris Wheel', points: 3 },
-    { emoji: '🐻', name: 'Bear Statue or Carving', points: 3 },
+    { emoji: '🎡', name: 'The Island Ferris Wheel', points: 3, mystery: true },
+    { emoji: '🐻', name: 'Bear Statue or Carving', points: 3, mystery: true },
     { emoji: '🍭', name: 'Candy Store or Fudge Shop', points: 3 }
   ],
   hard: [
@@ -1044,8 +1344,8 @@ const ROAD_TRIP_ITEMS = {
     { emoji: '📜', name: 'Historical Marker', points: 5 },
     { emoji: '🚗', name: 'Far-away License Plate', points: 5 },
     { emoji: '🦅', name: 'Hawk or Eagle Flying', points: 5 },
-    { emoji: '🎿', name: 'Mountain Coaster Sign', points: 5 },
-    { emoji: '🫙', name: 'Ole Smoky Moonshine', points: 5 }
+    { emoji: '🎿', name: 'Mountain Coaster Sign', points: 5, mystery: true },
+    { emoji: '🫙', name: 'Ole Smoky Moonshine', points: 5, mystery: true }
   ]
 };
 
@@ -1059,8 +1359,8 @@ const DOLLYWOOD_ITEMS = {
     { emoji: '🎢', name: 'Roller Coaster', points: 1 },
     { emoji: '⛲', name: 'Water Fountain', points: 1 },
     { emoji: '🎵', name: 'Live Musician', points: 1 },
-    { emoji: '👶', name: 'Baby in Stroller', points: 1 },
-    { emoji: '🗺️', name: 'Park Map', points: 1 }
+    { emoji: '👶', name: 'Baby in Stroller', points: 1, mystery: true },
+    { emoji: '🗺️', name: 'Park Map', points: 1, mystery: true }
   ],
   medium: [
     { emoji: '🍞', name: 'Cinnamon Bread Stand', points: 3 },
@@ -1071,8 +1371,8 @@ const DOLLYWOOD_ITEMS = {
     { emoji: '🤠', name: 'Cowboy Boots on Someone', points: 3 },
     { emoji: '🌊', name: 'Log Flume Splash', points: 3 },
     { emoji: '🍬', name: 'Candy Being Made', points: 3 },
-    { emoji: '🎠', name: 'Carousel Horse', points: 3 },
-    { emoji: '🎨', name: 'Face Painting', points: 3 }
+    { emoji: '🎠', name: 'Carousel Horse', points: 3, mystery: true },
+    { emoji: '🎨', name: 'Face Painting', points: 3, mystery: true }
   ],
   hard: [
     { emoji: '🦃', name: 'Wild Turkey Roaming', points: 5 },
@@ -1080,8 +1380,8 @@ const DOLLYWOOD_ITEMS = {
     { emoji: '🔥', name: 'Glass Blower / Candle Maker', points: 5 },
     { emoji: '⚡', name: 'Lightning Rod Launching', points: 5 },
     { emoji: '🎶', name: 'Someone Playing Dulcimer', points: 5 },
-    { emoji: '🤳', name: 'Family Selfie at Entrance', points: 5 },
-    { emoji: '🎉', name: 'All 3 of You on a Ride!', points: 5 }
+    { emoji: '🤳', name: 'Family Selfie at Entrance', points: 5, mystery: true },
+    { emoji: '🎉', name: 'All 3 of You on a Ride!', points: 5, mystery: true }
   ]
 };
 
@@ -1124,11 +1424,17 @@ let state = {
   players: DEFAULT_PLAYERS.map((p, i) => ({
     name: p.name,
     colorIndex: p.colorIndex,
+    avatarIndex: p.avatarIndex,
     scores: { roadtrip: 0, dollywood: 0 }
   })),
   claims: { roadtrip: {}, dollywood: {} }, // { mode: { "itemIndex-tier": playerIndex } }
   wildCards: [], // { text, playerIndex, approved, mode, timestamp }
-  milestonesShown: { roadtrip: [], dollywood: [] }
+  milestonesShown: { roadtrip: [], dollywood: [] },
+  lastClaimer: null,
+  currentStreak: 0,
+  lastRanks: [0, 0, 0],
+  badges: { 0: [], 1: [], 2: [] },
+  muted: false
 };
 
 function saveState() {
@@ -1144,6 +1450,20 @@ function loadState() {
       const parsed = JSON.parse(saved);
       // Merge with defaults in case we add new fields
       state = { ...state, ...parsed };
+      // Ensure new fields have defaults for backward compat
+      if (state.lastClaimer === undefined) state.lastClaimer = null;
+      if (state.currentStreak === undefined) state.currentStreak = 0;
+      if (!state.lastRanks) state.lastRanks = [0, 0, 0];
+      if (!state.badges) state.badges = { 0: [], 1: [], 2: [] };
+      if (state.muted === undefined) state.muted = false;
+      // Ensure each player has avatarIndex
+      state.players.forEach((p, i) => {
+        if (p.avatarIndex === undefined) p.avatarIndex = DEFAULT_PLAYERS[i]?.avatarIndex ?? i;
+      });
+      // Ensure badges has entries for all players
+      state.players.forEach((_, i) => {
+        if (!state.badges[i]) state.badges[i] = [];
+      });
       return true;
     }
   } catch(e) {}
@@ -1155,6 +1475,7 @@ function loadState() {
 // ==========================================
 function init() {
   const hadState = loadState();
+  updateMuteButton();
   if (hadState && state.started) {
     if (state.currentMode) {
       showScreen('game-screen');
@@ -1185,7 +1506,7 @@ function renderPlayerSetup() {
     const card = document.createElement('div');
     card.className = 'player-card-setup';
     card.innerHTML = `
-      <label>Player ${pIdx + 1}</label>
+      <label>${AVATARS[player.avatarIndex].emoji} Player ${pIdx + 1}</label>
       <input type="text" value="${player.name}" data-player="${pIdx}" placeholder="Enter name" maxlength="12">
       <div class="color-options" data-player="${pIdx}">
         ${COLORS.map((c, cIdx) => {
@@ -1194,6 +1515,15 @@ function renderPlayerSetup() {
           return `<button class="color-btn ${selected ? 'selected' : ''} ${taken ? 'taken' : ''}"
             style="background:${c.hex}" data-color="${cIdx}" data-player="${pIdx}"
             onclick="pickColor(${pIdx}, ${cIdx})" title="${c.name}"></button>`;
+        }).join('')}
+      </div>
+      <div class="avatar-options" data-player="${pIdx}">
+        ${AVATARS.map((a, aIdx) => {
+          const taken = state.players.some((p, pi) => pi !== pIdx && p.avatarIndex === aIdx);
+          const selected = player.avatarIndex === aIdx;
+          return `<button class="avatar-btn ${selected ? 'selected' : ''} ${taken ? 'taken' : ''}"
+            data-avatar="${aIdx}" data-player="${pIdx}"
+            onclick="pickAvatar(${pIdx}, ${aIdx})" title="${a.name}">${a.emoji}</button>`;
         }).join('')}
       </div>
     `;
@@ -1206,6 +1536,12 @@ function renderPlayerSetup() {
       state.players[parseInt(e.target.dataset.player)].name = e.target.value.trim() || `Player ${parseInt(e.target.dataset.player) + 1}`;
     });
   });
+}
+
+function pickAvatar(playerIdx, avatarIdx) {
+  if (state.players.some((p, pi) => pi !== playerIdx && p.avatarIndex === avatarIdx)) return;
+  state.players[playerIdx].avatarIndex = avatarIdx;
+  renderPlayerSetup();
 }
 
 function pickColor(playerIdx, colorIdx) {
@@ -1278,6 +1614,22 @@ function renderGame() {
   renderItems();
 }
 
+function getRank(points) {
+  let rank = RANKS[0];
+  for (const r of RANKS) {
+    if (points >= r.minPoints) rank = r;
+  }
+  return rank;
+}
+
+function getRankIndex(points) {
+  let idx = 0;
+  for (let i = 0; i < RANKS.length; i++) {
+    if (points >= RANKS[i].minPoints) idx = i;
+  }
+  return idx;
+}
+
 function renderScoreboard() {
   const mode = state.currentMode;
   const teamScore = getTotalTeamScore();
@@ -1292,11 +1644,14 @@ function renderScoreboard() {
       ${state.players.map((p, i) => {
         const pTotal = playerTotals[i];
         const crown = (maxScore > 0 && pTotal === maxScore) ? '\u{1F451} ' : '';
+        const avatar = AVATARS[p.avatarIndex] ? AVATARS[p.avatarIndex].emoji : '🦊';
+        const rank = getRank(pTotal);
         return `
         <div class="scoreboard-player">
-          <div class="scoreboard-dot" style="background:${COLORS[p.colorIndex].hex}"></div>
+          <span style="font-size:1.1rem">${avatar}</span>
           <span>${crown}${p.name}</span>
-          <strong class="scoreboard-score" style="font-size:1.1rem;color:${COLORS[p.colorIndex].hex}">${pTotal}</strong>
+          <strong class="scoreboard-score" data-player="${i}" style="font-size:1.1rem;color:${COLORS[p.colorIndex].hex}">${pTotal}</strong>
+          <span class="rank-emoji" title="${rank.name}">${rank.emoji}</span>
         </div>
       `}).join('')}
     </div>
@@ -1322,6 +1677,27 @@ function renderModeSwitcher() {
   });
 }
 
+function isMysteryUnlocked(mode, sectionKey) {
+  const items = getItems(mode);
+  const sectionItems = items[sectionKey] || [];
+  const nonMysteryItems = sectionItems.filter(item => !item.mystery);
+  const claimedNonMystery = nonMysteryItems.filter((_, origIdx) => {
+    // Find the actual index of this non-mystery item in the full section array
+    let count = 0;
+    for (let i = 0; i < sectionItems.length; i++) {
+      if (!sectionItems[i].mystery) {
+        if (count === origIdx) {
+          const ck = `${i}-${sectionKey}`;
+          return state.claims[mode]?.[ck] !== undefined && state.claims[mode]?.[ck] !== null;
+        }
+        count++;
+      }
+    }
+    return false;
+  }).length;
+  return claimedNonMystery >= Math.ceil(nonMysteryItems.length * 0.5);
+}
+
 function renderItems() {
   const mode = state.currentMode;
   const items = getItems(mode);
@@ -1340,6 +1716,7 @@ function renderItems() {
       const ck = `${idx}-${section.key}`;
       return state.claims[mode]?.[ck] !== undefined && state.claims[mode]?.[ck] !== null;
     }).length;
+    const mysteryOpen = isMysteryUnlocked(mode, section.key);
     return `
     <div class="section-header ${section.cssClass}">
       <span>${section.label}</span>
@@ -1352,16 +1729,30 @@ function renderItems() {
         const claimer = state.claims[mode]?.[claimKey];
         const isClaimed = claimer !== undefined && claimer !== null;
         const claimerPlayer = isClaimed ? state.players[claimer] : null;
+        const isMystery = item.mystery && !mysteryOpen && !isClaimed;
+
+        if (isMystery) {
+          return `
+            <div class="item-card mystery-locked" data-key="${claimKey}">
+              <div class="item-emoji">❓</div>
+              <div class="item-name">Mystery Item</div>
+              <div class="item-points" style="color:var(--text-light)">Find more to unlock!</div>
+            </div>
+          `;
+        }
+
+        const justRevealed = item.mystery && mysteryOpen && !isClaimed;
 
         return `
-          <div class="item-card ${isClaimed ? 'claimed' : ''}" data-key="${claimKey}">
+          <div class="item-card ${isClaimed ? 'claimed' : ''} ${justRevealed ? 'mystery-revealed' : ''}" data-key="${claimKey}">
+            ${justRevealed ? '<div class="new-badge">NEW!</div>' : ''}
             <div class="item-emoji">${item.emoji}</div>
             <div class="item-name">${item.name}</div>
             <div class="item-points">${'⭐'.repeat(item.points <= 1 ? 1 : item.points <= 3 ? 2 : 3)} ${item.points} pt${item.points > 1 ? 's' : ''}</div>
             ${isClaimed ? `
               <div class="claimed-overlay">
                 <div class="check">✅</div>
-                <div class="claimer-name" style="color:${COLORS[claimerPlayer.colorIndex].hex}">${claimerPlayer.name}</div>
+                <div class="claimer-name" style="color:${COLORS[claimerPlayer.colorIndex].hex}">${AVATARS[claimerPlayer.avatarIndex]?.emoji || ''} ${claimerPlayer.name}</div>
                 <button class="unclaim-btn" onclick="unclaimItem('${claimKey}', ${item.points}, ${claimer})">undo</button>
               </div>
             ` : `
@@ -1369,7 +1760,7 @@ function renderItems() {
                 ${state.players.map((p, pi) => `
                   <button class="claim-btn" style="border-color:${COLORS[p.colorIndex].hex};color:${COLORS[p.colorIndex].hex}"
                     onclick="claimItem('${claimKey}', ${item.points}, ${pi}, this)">
-                    ${p.name.slice(0, 1).toUpperCase()}
+                    ${AVATARS[p.avatarIndex]?.emoji || p.name.slice(0, 1).toUpperCase()}
                   </button>
                 `).join('')}
               </div>
@@ -1391,9 +1782,33 @@ function claimItem(claimKey, points, playerIdx, btnEl) {
   if (!state.claims[mode]) state.claims[mode] = {};
   if (state.claims[mode][claimKey] !== undefined) return;
 
+  // Save old scores for rank comparison
+  const oldTotals = state.players.map(p => (p.scores.roadtrip || 0) + (p.scores.dollywood || 0));
+
   state.claims[mode][claimKey] = playerIdx;
   state.players[playerIdx].scores[mode] = (state.players[playerIdx].scores[mode] || 0) + points;
+
+  // Streak tracking
+  if (playerIdx === state.lastClaimer) {
+    state.currentStreak++;
+  } else {
+    state.currentStreak = 1;
+    state.lastClaimer = playerIdx;
+  }
+
+  let streakBonus = false;
+  if (state.currentStreak >= 3 && state.currentStreak % 3 === 0) {
+    state.players[playerIdx].scores[mode] += 2;
+    streakBonus = true;
+  }
+
   saveState();
+
+  // Sound effects
+  SoundFX.claim();
+  if (streakBonus) {
+    setTimeout(() => SoundFX.streak(), 200);
+  }
 
   // Haptic feedback
   if (navigator.vibrate) navigator.vibrate(50);
@@ -1405,6 +1820,36 @@ function claimItem(claimKey, points, playerIdx, btnEl) {
   }
 
   renderGame();
+
+  // Card claim animation
+  const card = document.querySelector(`.item-card[data-key="${claimKey}"]`);
+  if (card) {
+    card.style.animation = 'cardClaim 0.3s ease';
+    card.addEventListener('animationend', () => { card.style.animation = ''; }, { once: true });
+  }
+
+  // Score jump animation
+  const scoreEl = document.querySelector(`.scoreboard-score[data-player="${playerIdx}"]`);
+  if (scoreEl) {
+    scoreEl.classList.add('pulse-score');
+    scoreEl.addEventListener('animationend', () => scoreEl.classList.remove('pulse-score'), { once: true });
+  }
+
+  // Streak animation
+  if (streakBonus) {
+    showStreakAnimation();
+    launchEmojiRain('🔥', 10);
+  }
+
+  // Check rank ups
+  checkRankUps(oldTotals);
+
+  // Check badges
+  checkBadges(playerIdx);
+
+  // Check if mystery items got unlocked (play sound)
+  checkMysteryUnlocks(mode);
+
   checkMilestones();
   checkModeComplete();
 }
@@ -1492,13 +1937,16 @@ function showMilestone(ms) {
 
   popup.classList.add('active');
 
-  // Haptic feedback on milestone
+  // Sound + haptic feedback on milestone
+  SoundFX.milestone();
   if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
   if (ms.points === 100) {
     launchConfetti(80);
+    launchEmojiRain('⭐', 15);
   } else {
     launchConfetti(30);
+    launchEmojiRain('⭐', 8);
   }
 }
 
@@ -1521,7 +1969,7 @@ function openWildCard() {
   picker.innerHTML = state.players.map((p, i) => `
     <button class="wild-player-btn ${i === 0 ? 'selected' : ''}"
       style="border-color:${COLORS[p.colorIndex].hex};color:${COLORS[p.colorIndex].hex};${i === 0 ? 'background:' + COLORS[p.colorIndex].hex : ''}"
-      onclick="selectWildPlayer(${i})">${p.name}</button>
+      onclick="selectWildPlayer(${i})">${AVATARS[p.avatarIndex]?.emoji || ''} ${p.name}</button>
   `).join('');
 
   document.getElementById('wild-input').value = '';
@@ -1573,15 +2021,24 @@ function voteWild(approved) {
   wc.approved = approved;
   wc.timestamp = new Date().toISOString();
 
+  const oldTotals = state.players.map(p => (p.scores.roadtrip || 0) + (p.scores.dollywood || 0));
+
   if (approved) {
     const mode = wc.mode;
     state.players[wc.playerIndex].scores[mode] = (state.players[wc.playerIndex].scores[mode] || 0) + 3;
     launchConfetti(15);
+    SoundFX.claim();
   }
 
   state.wildCards.push(wc);
   saveState();
   renderGame();
+
+  if (approved) {
+    checkRankUps(oldTotals);
+    checkBadges(wc.playerIndex);
+  }
+
   checkMilestones();
   window._pendingWild = null;
 }
@@ -1592,6 +2049,7 @@ function voteWild(approved) {
 function openSettings() {
   document.getElementById('wild-log-display').style.display = 'none';
   document.getElementById('trip-summary-display').style.display = 'none';
+  document.getElementById('badge-display').style.display = 'none';
   document.getElementById('settings-modal').classList.add('active');
 }
 
@@ -1634,8 +2092,10 @@ function showTripSummary() {
 
   const playerStats = state.players.map(p => {
     const total = (p.scores.roadtrip||0) + (p.scores.dollywood||0);
+    const avatar = AVATARS[p.avatarIndex]?.emoji || '';
+    const rank = getRank(total);
     return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee">
-      <span style="font-weight:700;color:${COLORS[p.colorIndex].hex}">${p.name}</span>
+      <span style="font-weight:700;color:${COLORS[p.colorIndex].hex}">${avatar} ${p.name} ${rank.emoji}</span>
       <span>${total} pts (🚗${p.scores.roadtrip||0} + 🎢${p.scores.dollywood||0})</span>
     </div>`;
   }).join('');
@@ -1675,12 +2135,20 @@ function doReset() {
     players: DEFAULT_PLAYERS.map(p => ({
       name: p.name,
       colorIndex: p.colorIndex,
+      avatarIndex: p.avatarIndex,
       scores: { roadtrip: 0, dollywood: 0 }
     })),
     claims: { roadtrip: {}, dollywood: {} },
     wildCards: [],
-    milestonesShown: { roadtrip: [], dollywood: [] }
+    milestonesShown: { roadtrip: [], dollywood: [] },
+    lastClaimer: null,
+    currentStreak: 0,
+    lastRanks: [0, 0, 0],
+    badges: { 0: [], 1: [], 2: [] },
+    muted: false
   };
+  window._modeComplete_roadtrip = false;
+  window._modeComplete_dollywood = false;
   closeReset();
   renderPlayerSetup();
   showScreen('start-screen');
@@ -1726,13 +2194,25 @@ function launchConfetti(count) {
     piece.className = 'confetti-piece';
     const color = colors[Math.floor(Math.random() * colors.length)];
     const size = 6 + Math.random() * 8;
-    const isCircle = Math.random() > 0.5;
+    // Varied shapes: circles, squares, long rectangles
+    const shapeRoll = Math.random();
+    let w, h, radius;
+    if (shapeRoll < 0.33) {
+      // Circle
+      w = size; h = size; radius = '50%';
+    } else if (shapeRoll < 0.66) {
+      // Square
+      w = size; h = size; radius = '2px';
+    } else {
+      // Long rectangle / streamer
+      w = size * 0.4; h = size * 2; radius = '2px';
+    }
     piece.style.cssText = `
       left: ${Math.random() * 100}%;
-      width: ${size}px;
-      height: ${isCircle ? size : size * 0.6}px;
+      width: ${w}px;
+      height: ${h}px;
       background: ${color};
-      border-radius: ${isCircle ? '50%' : '2px'};
+      border-radius: ${radius};
       animation-duration: ${1.5 + Math.random() * 2}s;
       animation-delay: ${Math.random() * 0.5}s;
     `;
@@ -1742,6 +2222,323 @@ function launchConfetti(count) {
   setTimeout(() => {
     container.innerHTML = '';
   }, 4000);
+}
+
+// ==========================================
+// SOUND EFFECTS (Web Audio API)
+// ==========================================
+const SoundFX = {
+  _ctx: null,
+  _getCtx() {
+    if (!this._ctx) {
+      this._ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (this._ctx.state === 'suspended') this._ctx.resume();
+    return this._ctx;
+  },
+  _playNote(freq, duration, startTime, wave = 'sine', volume = 0.15) {
+    if (state.muted) return;
+    const ctx = this._getCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = wave;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(volume, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  },
+  claim() {
+    if (state.muted) return;
+    const ctx = this._getCtx();
+    const now = ctx.currentTime;
+    this._playNote(523, 0.1, now);        // C5
+    this._playNote(659, 0.1, now + 0.1);  // E5
+  },
+  streak() {
+    if (state.muted) return;
+    const ctx = this._getCtx();
+    const now = ctx.currentTime;
+    this._playNote(523, 0.08, now);         // C5
+    this._playNote(659, 0.08, now + 0.08);  // E5
+    this._playNote(784, 0.08, now + 0.16);  // G5
+  },
+  milestone() {
+    if (state.muted) return;
+    const ctx = this._getCtx();
+    const now = ctx.currentTime;
+    this._playNote(262, 0.15, now);          // C4
+    this._playNote(330, 0.15, now + 0.15);   // E4
+    this._playNote(392, 0.2, now + 0.3);     // G4
+    this._playNote(523, 0.3, now + 0.5);     // C5
+  },
+  unlock() {
+    if (state.muted) return;
+    const ctx = this._getCtx();
+    const now = ctx.currentTime;
+    this._playNote(196, 0.25, now, 'triangle', 0.12);  // G3
+    this._playNote(262, 0.3, now + 0.2, 'triangle', 0.12); // C4
+  },
+  rankUp() {
+    if (state.muted) return;
+    const ctx = this._getCtx();
+    const now = ctx.currentTime;
+    this._playNote(262, 0.08, now);          // C4
+    this._playNote(330, 0.08, now + 0.08);   // E4
+    this._playNote(392, 0.08, now + 0.16);   // G4
+    this._playNote(523, 0.08, now + 0.24);   // C5
+    this._playNote(659, 0.15, now + 0.32);   // E5
+  }
+};
+
+// ==========================================
+// MUTE TOGGLE
+// ==========================================
+function toggleMute() {
+  state.muted = !state.muted;
+  saveState();
+  updateMuteButton();
+}
+
+function updateMuteButton() {
+  const btn = document.getElementById('sound-toggle');
+  if (btn) btn.textContent = state.muted ? '🔇' : '🔊';
+}
+
+// ==========================================
+// STREAK ANIMATION
+// ==========================================
+function showStreakAnimation() {
+  const el = document.createElement('div');
+  el.className = 'streak-fly';
+  el.textContent = '🔥 STREAK! +2';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+
+// ==========================================
+// EMOJI RAIN
+// ==========================================
+function launchEmojiRain(emoji, count) {
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'emoji-rain-piece';
+    el.textContent = emoji;
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+    el.style.animationDelay = (Math.random() * 0.6) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+}
+
+// ==========================================
+// RANK SYSTEM
+// ==========================================
+function checkRankUps(oldTotals) {
+  const newTotals = state.players.map(p => (p.scores.roadtrip || 0) + (p.scores.dollywood || 0));
+  state.players.forEach((p, i) => {
+    const oldRankIdx = getRankIndex(oldTotals[i]);
+    const newRankIdx = getRankIndex(newTotals[i]);
+    if (newRankIdx > oldRankIdx) {
+      state.lastRanks[i] = newRankIdx;
+      const newRank = RANKS[newRankIdx];
+      const avatar = AVATARS[p.avatarIndex]?.emoji || '';
+      SoundFX.rankUp();
+      launchConfetti(20);
+      launchEmojiRain('🏆', 8);
+
+      // Show rank-up popup via milestone popup
+      const popup = document.getElementById('milestone-popup');
+      const content = document.getElementById('milestone-content');
+      content.innerHTML = `
+        <div class="ms-emoji">${newRank.emoji}</div>
+        <h2>Rank Up!</h2>
+        <p>${avatar} <strong style="color:${COLORS[p.colorIndex].hex}">${p.name}</strong> is now a <strong>${newRank.emoji} ${newRank.name}</strong>!</p>
+        <button onclick="closeMilestone()">Awesome!</button>
+      `;
+      popup.classList.add('active');
+    }
+  });
+  saveState();
+}
+
+// ==========================================
+// MYSTERY ITEM UNLOCKS
+// ==========================================
+function checkMysteryUnlocks(mode) {
+  // We just check if any section became unlocked and play sound
+  // This is a lightweight check — the actual unlock state is derived in renderItems
+  const items = getItems(mode);
+  ['easy', 'medium', 'hard'].forEach(tier => {
+    const sectionItems = items[tier] || [];
+    const hasMystery = sectionItems.some(item => item.mystery);
+    if (!hasMystery) return;
+
+    const unlockKey = `_mysteryUnlocked_${mode}_${tier}`;
+    const wasUnlocked = window[unlockKey];
+    const isUnlocked = isMysteryUnlocked(mode, tier);
+
+    if (isUnlocked && !wasUnlocked) {
+      window[unlockKey] = true;
+      SoundFX.unlock();
+      showToast('🔓 Mystery items unlocked!');
+    }
+  });
+}
+
+// ==========================================
+// BADGE SYSTEM
+// ==========================================
+function checkBadges(playerIdx) {
+  if (!state.badges) state.badges = { 0: [], 1: [], 2: [] };
+  if (!state.badges[playerIdx]) state.badges[playerIdx] = [];
+
+  const earned = state.badges[playerIdx];
+  const player = state.players[playerIdx];
+  const pTotal = (player.scores.roadtrip || 0) + (player.scores.dollywood || 0);
+
+  function award(badgeId) {
+    if (earned.includes(badgeId)) return;
+    earned.push(badgeId);
+    const badge = BADGES.find(b => b.id === badgeId);
+    if (badge) {
+      SoundFX.claim();
+      showToast(`${badge.emoji} ${player.name} earned: ${badge.name}!`);
+    }
+    saveState();
+  }
+
+  // first-find: player has any claims
+  const hasClaim = Object.values(state.claims).some(modeClaims =>
+    Object.values(modeClaims).some(pi => pi === playerIdx)
+  );
+  if (hasClaim) award('first-find');
+
+  // eagle-eye: player has claimed a 5-point item
+  for (const mode of ['roadtrip', 'dollywood']) {
+    const items = getItems(mode);
+    for (const tier of ['easy', 'medium', 'hard']) {
+      (items[tier] || []).forEach((item, idx) => {
+        const ck = `${idx}-${tier}`;
+        if (state.claims[mode]?.[ck] === playerIdx && item.points === 5) {
+          award('eagle-eye');
+        }
+      });
+    }
+  }
+
+  // streak-master
+  if (state.currentStreak >= 3 && state.lastClaimer === playerIdx) {
+    award('streak-master');
+  }
+
+  // wild-one
+  if (state.wildCards.some(wc => wc.playerIndex === playerIdx && wc.approved)) {
+    award('wild-one');
+  }
+
+  // halfway: 50% items claimed in either mode
+  for (const mode of ['roadtrip', 'dollywood']) {
+    const items = getItems(mode);
+    const total = (items.easy?.length || 0) + (items.medium?.length || 0) + (items.hard?.length || 0);
+    let claimed = 0;
+    ['easy', 'medium', 'hard'].forEach(tier => {
+      (items[tier] || []).forEach((_, idx) => {
+        const ck = `${idx}-${tier}`;
+        if (state.claims[mode]?.[ck] !== undefined && state.claims[mode]?.[ck] !== null) claimed++;
+      });
+    });
+    if (total > 0 && claimed >= Math.ceil(total * 0.5)) award('halfway');
+  }
+
+  // ten-club
+  if (pTotal >= 10) award('ten-club');
+
+  // team-spirit: all 3 players claim in same tier of same mode
+  for (const mode of ['roadtrip', 'dollywood']) {
+    const items = getItems(mode);
+    for (const tier of ['easy', 'medium', 'hard']) {
+      const claimers = new Set();
+      (items[tier] || []).forEach((_, idx) => {
+        const ck = `${idx}-${tier}`;
+        const claimer = state.claims[mode]?.[ck];
+        if (claimer !== undefined && claimer !== null) claimers.add(claimer);
+      });
+      if (claimers.size >= 3) {
+        // Award to all players
+        state.players.forEach((_, pi) => {
+          if (!state.badges[pi]) state.badges[pi] = [];
+          if (!state.badges[pi].includes('team-spirit')) {
+            state.badges[pi].push('team-spirit');
+          }
+        });
+        const badge = BADGES.find(b => b.id === 'team-spirit');
+        if (badge && !earned.includes('team-spirit')) {
+          showToast(`${badge.emoji} Team Spirit! All players claimed in ${tier}!`);
+        }
+        saveState();
+      }
+    }
+  }
+
+  // completionist: all items in a mode claimed by anyone
+  for (const mode of ['roadtrip', 'dollywood']) {
+    const items = getItems(mode);
+    const total = (items.easy?.length || 0) + (items.medium?.length || 0) + (items.hard?.length || 0);
+    let claimed = 0;
+    ['easy', 'medium', 'hard'].forEach(tier => {
+      (items[tier] || []).forEach((_, idx) => {
+        const ck = `${idx}-${tier}`;
+        if (state.claims[mode]?.[ck] !== undefined && state.claims[mode]?.[ck] !== null) claimed++;
+      });
+    });
+    if (total > 0 && claimed >= total) award('completionist');
+  }
+}
+
+function showBadges() {
+  const display = document.getElementById('badge-display');
+  const content = document.getElementById('badge-content');
+
+  let html = '';
+  state.players.forEach((p, pi) => {
+    const playerBadges = state.badges[pi] || [];
+    const avatar = AVATARS[p.avatarIndex]?.emoji || '';
+    html += `<div class="badge-player-name" style="color:${COLORS[p.colorIndex].hex}">${avatar} ${p.name}</div>`;
+    html += '<div class="badge-grid">';
+    BADGES.forEach(badge => {
+      const isEarned = playerBadges.includes(badge.id);
+      html += `
+        <div class="badge-item ${isEarned ? 'earned' : 'locked'}">
+          <span class="badge-emoji">${isEarned ? badge.emoji : '🔒'}</span>
+          <div class="badge-name">${badge.name}</div>
+          <div class="badge-desc">${badge.desc}</div>
+        </div>
+      `;
+    });
+    html += '</div>';
+  });
+
+  content.innerHTML = html;
+  display.style.display = 'block';
+}
+
+// ==========================================
+// TOAST NOTIFICATIONS
+// ==========================================
+let _toastTimeout = null;
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(_toastTimeout);
+  _toastTimeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
 }
 
 // ==========================================
