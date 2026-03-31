@@ -1128,7 +1128,40 @@ body::before {
 @media (min-width: 600px) {
   .item-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 }
+
+/* Sync indicator */
+.sync-indicator {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  z-index: 300;
+  background: rgba(255,255,255,0.92);
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transition: opacity 0.3s;
+}
+
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #DDD;
+  transition: background 0.3s;
+}
+
+.sync-dot.online { background: var(--forest-green); }
+.sync-dot.offline { background: var(--coral); }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -1255,6 +1288,11 @@ body::before {
 <!-- ======= CONFETTI CONTAINER ======= -->
 <div class="confetti-container" id="confetti-container"></div>
 
+<div class="sync-indicator" id="sync-indicator" style="display:none">
+  <span class="sync-dot" id="sync-dot"></span>
+  <span class="sync-text" id="sync-text">Synced</span>
+</div>
+
 <!-- ======= SOUND TOGGLE ======= -->
 <button class="sound-toggle" id="sound-toggle" onclick="toggleMute()" title="Toggle Sound">🔊</button>
 
@@ -1262,6 +1300,130 @@ body::before {
 <div class="toast" id="toast"></div>
 
 <script>
+// ==========================================
+// FIREBASE SYNC
+// ==========================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDFN97d7ejdzT1n7-NsoOv6QQ3iWXRx22k",
+  authDomain: "spy-quest.firebaseapp.com",
+  databaseURL: "https://spy-quest-default-rtdb.firebaseio.com",
+  projectId: "spy-quest",
+  storageBucket: "spy-quest.firebasestorage.app",
+  messagingSenderId: "429310201066",
+  appId: "1:429310201066:web:8abfdedb79f8325bb89b93"
+};
+
+const GAME_ID = 'smoky2026';
+let db = null;
+let gameRef = null;
+let _isSyncingFromFirebase = false;
+let _firebaseWriteTimer = null;
+let _firebaseReady = false;
+
+// Initialize Firebase (graceful fallback if SDK didn't load)
+try {
+  if (typeof firebase !== 'undefined' && FIREBASE_CONFIG.apiKey !== 'PLACEHOLDER') {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    gameRef = db.ref('games/' + GAME_ID + '/state');
+    _firebaseReady = true;
+  }
+} catch(e) {
+  console.warn('Firebase init failed, running in local-only mode:', e.message);
+}
+
+function saveStateToFirebase() {
+  if (!_firebaseReady || _isSyncingFromFirebase) return;
+
+  clearTimeout(_firebaseWriteTimer);
+  _firebaseWriteTimer = setTimeout(() => {
+    const syncState = JSON.parse(JSON.stringify(state));
+    delete syncState.muted; // muted is per-device
+    syncState._lastUpdated = firebase.database.ServerValue.TIMESTAMP;
+
+    gameRef.set(syncState).catch(err => {
+      console.warn('Firebase write failed:', err.message);
+    });
+  }, 100);
+}
+
+function startFirebaseListener() {
+  if (!_firebaseReady) return;
+
+  // Show sync indicator
+  const indicator = document.getElementById('sync-indicator');
+  if (indicator) indicator.style.display = 'flex';
+
+  gameRef.on('value', (snapshot) => {
+    const remoteState = snapshot.val();
+    if (!remoteState) return;
+
+    // Remove timestamp for comparison
+    const remoteCopy = { ...remoteState };
+    delete remoteCopy._lastUpdated;
+    const localCopy = { ...state };
+    delete localCopy.muted;
+    delete localCopy._lastUpdated;
+
+    // Skip if no meaningful change
+    if (JSON.stringify(remoteCopy) === JSON.stringify(localCopy)) return;
+
+    _isSyncingFromFirebase = true;
+
+    // Preserve local-only fields
+    const localMuted = state.muted;
+    const wasStarted = state.started;
+    const hadMode = state.currentMode;
+
+    // Merge remote into local
+    state = { ...state, ...remoteState };
+    state.muted = localMuted;
+    delete state._lastUpdated;
+
+    // Backward-compat defaults for new fields
+    if (state.lastClaimer === undefined) state.lastClaimer = null;
+    if (state.currentStreak === undefined) state.currentStreak = 0;
+    if (!state.lastRanks) state.lastRanks = [0, 0, 0];
+    if (!state.badges) state.badges = { 0: [], 1: [], 2: [] };
+    if (!Array.isArray(state.players)) state.players = [];
+    state.players.forEach((p, i) => {
+      if (p.avatarIndex === undefined) p.avatarIndex = i;
+      if (!state.badges[i]) state.badges[i] = [];
+    });
+
+    // Save to localStorage
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch(e) {}
+
+    // Update the visible screen
+    if (state.started && state.currentMode) {
+      showScreen('game-screen');
+      renderGame();
+    } else if (state.started && !state.currentMode) {
+      showScreen('mode-screen');
+      document.getElementById('back-to-game-btn').style.display = 'none';
+    } else if (!state.started && wasStarted) {
+      // Remote reset
+      renderPlayerSetup();
+      showScreen('start-screen');
+    }
+
+    _isSyncingFromFirebase = false;
+  });
+
+  // Connection status
+  db.ref('.info/connected').on('value', (snap) => {
+    const connected = snap.val();
+    const dot = document.getElementById('sync-dot');
+    const text = document.getElementById('sync-text');
+    if (dot && text) {
+      dot.className = 'sync-dot ' + (connected ? 'online' : 'offline');
+      text.textContent = connected ? 'Synced' : 'Offline';
+    }
+  });
+}
+
 // ==========================================
 // DATA
 // ==========================================
@@ -1441,6 +1603,7 @@ function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch(e) {}
+  saveStateToFirebase();
 }
 
 function loadState() {
@@ -1488,6 +1651,9 @@ function init() {
     renderPlayerSetup();
     showScreen('start-screen');
   }
+
+  // Start Firebase real-time sync
+  startFirebaseListener();
 }
 
 function showScreen(id) {
@@ -1534,6 +1700,7 @@ function renderPlayerSetup() {
   container.querySelectorAll('input').forEach(input => {
     input.addEventListener('input', (e) => {
       state.players[parseInt(e.target.dataset.player)].name = e.target.value.trim() || `Player ${parseInt(e.target.dataset.player) + 1}`;
+      saveState();
     });
   });
 }
@@ -1542,6 +1709,7 @@ function pickAvatar(playerIdx, avatarIdx) {
   if (state.players.some((p, pi) => pi !== playerIdx && p.avatarIndex === avatarIdx)) return;
   state.players[playerIdx].avatarIndex = avatarIdx;
   renderPlayerSetup();
+  saveState();
 }
 
 function pickColor(playerIdx, colorIdx) {
@@ -1549,6 +1717,7 @@ function pickColor(playerIdx, colorIdx) {
   if (state.players.some((p, pi) => pi !== playerIdx && p.colorIndex === colorIdx)) return;
   state.players[playerIdx].colorIndex = colorIdx;
   renderPlayerSetup();
+  saveState();
 }
 
 function startGame() {
@@ -2128,6 +2297,7 @@ function closeReset() {
 
 function doReset() {
   localStorage.removeItem(STORAGE_KEY);
+  if (_firebaseReady) gameRef.set(null);
   state = {
     started: false,
     currentMode: null,
