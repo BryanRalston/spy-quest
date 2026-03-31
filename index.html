@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#66BB6A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Spy Quest">
+<title>Smoky Mountain Spy Quest</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sky-blue: #4FC3F7;
+  --forest-green: #66BB6A;
+  --sunset-orange: #FFA726;
+  --berry-purple: #AB47BC;
+  --coral: #FF7043;
+  --golden: #FFD54F;
+  --bg-cream: #FFF8F0;
+  --bg-white: #FFFFFF;
+  --text-dark: #2D3436;
+  --text-medium: #636E72;
+  --text-light: #B2BEC3;
+  --shadow-soft: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-hover: 0 6px 24px rgba(0,0,0,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-cream);
+  color: var(--text-dark);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Mountain silhouette background */
+body::before {
+  content: '';
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(102,187,106,0.06) 40%,
+    rgba(102,187,106,0.12) 100%
+  );
+  clip-path: polygon(0% 60%, 8% 40%, 15% 55%, 25% 25%, 35% 45%, 45% 15%, 55% 35%, 65% 20%, 75% 40%, 85% 30%, 92% 50%, 100% 35%, 100% 100%, 0% 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ======= SCREENS ======= */
+.screen { display: none; padding: 16px; padding-bottom: 100px; position: relative; z-index: 1; }
+.screen.active { display: block; }
+
+/* ======= START SCREEN ======= */
+#start-screen {
+  display: none;
+  min-height: 100dvh;
+  padding: 24px 16px;
+  text-align: center;
+}
+#start-screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.game-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--forest-green), var(--sky-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.game-title .emoji-row {
+  font-size: 2.5rem;
+  display: block;
+  -webkit-text-fill-color: initial;
+  margin-bottom: 4px;
+}
+
+.game-subtitle {
+  color: var(--text-medium);
+  font-size: 1rem;
+  margin-top: -8px;
+}
+
+/* Player setup */
+.player-setup {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.player-card-setup {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+}
+
+.player-card-setup label {
+  font-weight: 700;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.player-card-setup input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #E0E0E0;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.player-card-setup input:focus {
+  border-color: var(--sky-blue);
+}
+
+.color-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.color-btn:hover, .color-btn:active {
+  transform: scale(1.15);
+}
+
+.color-btn.selected {
+  border-color: var(--text-dark);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
+}
+
+.color-btn.selected::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.color-btn.taken {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.start-btn {
+  width: 100%;
+  max-width: 400px;
+  padding: 18px 32px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  border: none;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--forest-green), #43A047);
+  color: white;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.start-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.start-btn:active { transform: translateY(0); }
+
+/* ======= MODE SELECT ======= */
+#mode-screen {
+  text-align: center;
+  padding-top: 40px;
+}
+
+.mode-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.mode-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.mode-card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 3px solid transparent;
+}
+
+.mode-card:hover, .mode-card:active {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.mode-card.road-trip { border-color: var(--sunset-orange); }
+.mode-card.dollywood { border-color: var(--berry-purple); }
+
+.mode-card .mode-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.mode-card .mode-name { font-size: 1.4rem; font-weight: 800; }
+.mode-card .mode-desc { color: var(--text-medium); font-size: 0.9rem; margin-top: 4px; }
+
+/* ======= GAME BOARD ======= */
+
+/* Scoreboard */
+.scoreboard {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 10px 16px;
+  margin: -16px -16px 16px -16px;
+}
+
+.scoreboard-players {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.scoreboard-player {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.scoreboard-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.scoreboard-team {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-medium);
+}
+
+.scoreboard-team strong {
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+/* Milestone progress bar */
+.milestone-bar {
+  width: 100%;
+  height: 8px;
+  background: #EEE;
+  border-radius: 4px;
+  margin-top: 6px;
+  position: relative;
+  overflow: visible;
+}
+
+.milestone-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--forest-green), var(--sky-blue), var(--berry-purple));
+  transition: width 0.5s ease;
+  min-width: 0;
+}
+
+.milestone-markers {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.milestone-marker {
+  position: absolute;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #DDD;
+  border: 2px solid white;
+  transform: translateX(-50%);
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.milestone-marker.reached {
+  background: var(--golden);
+  box-shadow: 0 0 8px rgba(255,213,79,0.5);
+}
+
+/* Mode switcher */
+.mode-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mode-switch-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid #E0E0E0;
+  background: var(--bg-white);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-switch-btn.active {
+  border-color: var(--sky-blue);
+  background: var(--sky-blue);
+  color: white;
+}
+
+/* Section headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 12px 0;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.section-header.easy {
+  background: linear-gradient(135deg, rgba(102,187,106,0.15), rgba(102,187,106,0.05));
+  color: #388E3C;
+}
+
+.section-header.medium {
+  background: linear-gradient(135deg, rgba(255,167,38,0.15), rgba(255,167,38,0.05));
+  color: #E65100;
+}
+
+.section-header.hard {
+  background: linear-gradient(135deg, rgba(171,71,188,0.15), rgba(171,71,188,0.05));
+  color: #7B1FA2;
+}
+
+.section-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.65;
+  margin-left: 4px;
+}
+
+/* Item grid */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+/* Item cards */
+.item-card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 14px 12px 12px;
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  position: relative;
+  transition: all 0.3s;
+  overflow: hidden;
+}
+
+.item-card.claimed {
+  opacity: 0.7;
+}
+
+.item-card .item-emoji {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.item-card .item-name {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.item-card .item-points {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+  margin-bottom: 8px;
+}
+
+.claim-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.claim-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: inherit;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.claim-btn:hover, .claim-btn:active {
+  transform: scale(1.1);
+}
+
+.claim-btn:active {
+  transform: scale(0.95);
+}
+
+/* Claimed overlay */
+.claimed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  animation: claimFadeIn 0.3s ease;
+}
+
+.claimed-overlay .check {
+  font-size: 2.2rem;
+  animation: claimBounce 0.5s ease;
+}
+
+.claimed-overlay .claimer-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.unclaim-btn {
+  margin-top: 4px;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: underline;
+}
+
+@keyframes claimFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes claimBounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Wild card FAB */
+.wild-card-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--golden), var(--sunset-orange));
+  border: none;
+  color: white;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 16px rgba(255,167,38,0.4);
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wild-card-fab:hover { transform: scale(1.1); }
+.wild-card-fab:active { transform: scale(0.95); }
+
+/* Settings gear */
+.settings-fab {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.06);
+  border: none;
+  color: var(--text-light);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.2s;
+}
+
+/* ======= MODALS ======= */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-backdrop.active {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+  animation: modalIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal h2 {
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #E0E0E0;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  outline: none;
+}
+
+.modal textarea:focus {
+  border-color: var(--sky-blue);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--sky-blue);
+  color: white;
+}
+
+.btn-secondary {
+  background: #EEE;
+  color: var(--text-dark);
+}
+
+.btn-danger {
+  background: var(--coral);
+  color: white;
+}
+
+/* Wild card vote buttons */
+.vote-section {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.vote-section p {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.vote-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.vote-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid #E0E0E0;
+  background: white;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vote-btn:hover, .vote-btn:active { transform: scale(1.15); }
+.vote-btn.up { border-color: var(--forest-green); }
+.vote-btn.down { border-color: var(--coral); }
+
+/* Wild card picker */
+.wild-player-pick {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.wild-player-btn {
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  border: 2px solid;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.wild-player-btn.selected {
+  color: white !important;
+}
+
+/* Wild card log */
+.wild-log {
+  margin-top: 16px;
+}
+
+.wild-log-entry {
+  background: #F5F5F5;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.wild-log-entry .wl-text { font-weight: 700; }
+.wild-log-entry .wl-meta { color: var(--text-medium); font-size: 0.8rem; margin-top: 2px; }
+
+/* Milestone popup */
+.milestone-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  padding: 16px;
+}
+
+.milestone-popup.active {
+  display: flex;
+}
+
+.milestone-content {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+  animation: milestoneIn 0.5s ease;
+}
+
+.milestone-content .ms-emoji { font-size: 3rem; margin-bottom: 8px; }
+.milestone-content h2 { font-size: 1.3rem; margin-bottom: 12px; }
+.milestone-content p { color: var(--text-medium); line-height: 1.5; font-size: 0.95rem; margin-bottom: 16px; }
+.milestone-content button {
+  padding: 12px 32px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--sky-blue);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@keyframes milestoneIn {
+  0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2000;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -20px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* Star burst for claims */
+.star-burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 300;
+}
+
+.star-particle {
+  position: absolute;
+  font-size: 1.2rem;
+  animation: starFly 0.7s ease-out forwards;
+}
+
+@keyframes starFly {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Settings panel */
+.settings-panel { text-align: center; }
+.settings-panel h2 { margin-bottom: 20px; }
+.settings-panel .settings-option {
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  background: #F5F5F5;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+.settings-panel .settings-option:hover { background: #EEE; }
+.settings-panel .settings-option.danger { color: var(--coral); }
+
+/* Wild card log on settings */
+.wild-log-section {
+  margin-top: 16px;
+  text-align: left;
+}
+
+.wild-log-section h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+/* Back button in mode select when returning */
+.back-to-game {
+  margin-top: 20px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  border: 2px solid #E0E0E0;
+  background: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* ======= ANIMATIONS ======= */
+.pulse-once {
+  animation: pulseOnce 0.4s ease;
+}
+
+@keyframes pulseOnce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Small screen tweaks */
+@media (max-width: 380px) {
+  .game-title { font-size: 1.6rem; }
+  .scoreboard-players { gap: 10px; }
+  .scoreboard-player { font-size: 0.8rem; }
+  .item-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .claim-btn { width: 38px; height: 38px; font-size: 0.6rem; }
+}
+
+@media (min-width: 600px) {
+  .item-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<!-- ======= START SCREEN ======= -->
+<div id="start-screen" class="screen active">
+  <div class="game-title">
+    <span class="emoji-row">🏔️ 🔭</span>
+    Smoky Mountain<br>Spy Quest
+  </div>
+  <p class="game-subtitle">A scavenger hunt adventure!</p>
+
+  <div class="player-setup" id="player-setup"></div>
+
+  <button class="start-btn" onclick="startGame()">🚀 Start Adventure!</button>
+</div>
+
+<!-- ======= MODE SELECT ======= -->
+<div id="mode-screen" class="screen">
+  <div class="mode-title">Choose Your Adventure!</div>
+  <div class="mode-cards">
+    <div class="mode-card road-trip" onclick="selectMode('roadtrip')">
+      <span class="mode-emoji">🚗</span>
+      <div class="mode-name">Road Trip</div>
+      <div class="mode-desc">The drive + Pigeon Forge town</div>
+    </div>
+    <div class="mode-card dollywood" onclick="selectMode('dollywood')">
+      <span class="mode-emoji">🎢</span>
+      <div class="mode-name">Dollywood</div>
+      <div class="mode-desc">Theme park adventure!</div>
+    </div>
+  </div>
+  <button class="back-to-game" id="back-to-game-btn" onclick="backToGame()" style="display:none">← Back to Game</button>
+</div>
+
+<!-- ======= GAME BOARD ======= -->
+<div id="game-screen" class="screen">
+  <div class="scoreboard" id="scoreboard"></div>
+
+  <div class="mode-switcher">
+    <button class="mode-switch-btn" data-mode="roadtrip" onclick="switchMode('roadtrip')">🚗 Road Trip</button>
+    <button class="mode-switch-btn" data-mode="dollywood" onclick="switchMode('dollywood')">🎢 Dollywood</button>
+  </div>
+
+  <div id="game-items"></div>
+
+  <button class="wild-card-fab" onclick="openWildCard()" title="Wild Card!">⭐</button>
+  <button class="settings-fab" onclick="openSettings()" title="Settings">⚙️</button>
+</div>
+
+<!-- ======= WILD CARD MODAL ======= -->
+<div class="modal-backdrop" id="wild-modal">
+  <div class="modal">
+    <h2>⭐ Wild Card!</h2>
+    <p style="text-align:center;margin-bottom:12px;color:var(--text-medium);">Who spotted something?</p>
+    <div class="wild-player-pick" id="wild-player-pick"></div>
+    <textarea id="wild-input" placeholder="What unexpected thing did you spot?"></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeWildCard()">Cancel</button>
+      <button class="btn-primary" onclick="submitWildCard()">Submit!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= WILD CARD VOTE MODAL ======= -->
+<div class="modal-backdrop" id="vote-modal">
+  <div class="modal">
+    <h2>⭐ Wild Card Spotted!</h2>
+    <p id="vote-description" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:4px;"></p>
+    <p id="vote-spotter" style="text-align:center;color:var(--text-medium);margin-bottom:12px;"></p>
+    <div class="vote-section">
+      <p>Does it count? Vote!</p>
+      <div class="vote-buttons">
+        <button class="vote-btn up" onclick="voteWild(true)">👍</button>
+        <button class="vote-btn down" onclick="voteWild(false)">👎</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SETTINGS MODAL ======= -->
+<div class="modal-backdrop" id="settings-modal">
+  <div class="modal settings-panel">
+    <h2>⚙️ Settings</h2>
+    <button class="settings-option" onclick="showWildLog()">📝 Wild Card Log</button>
+    <button class="settings-option" onclick="switchModeFromSettings()">🔄 Switch Mode</button>
+    <button class="settings-option" onclick="showTripSummary()">📊 Trip Summary</button>
+    <button class="settings-option danger" onclick="confirmReset()">🗑️ Reset Game</button>
+    <div class="wild-log-section" id="wild-log-display" style="display:none">
+      <h3>Wild Card Memories</h3>
+      <div id="wild-log-entries"></div>
+    </div>
+    <div class="wild-log-section" id="trip-summary-display" style="display:none">
+      <h3>Trip Stats</h3>
+      <div id="trip-summary-content"></div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn-secondary" onclick="closeSettings()" style="width:100%">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= RESET CONFIRM MODAL ======= -->
+<div class="modal-backdrop" id="reset-modal">
+  <div class="modal" style="text-align:center">
+    <h2>🗑️ Reset Everything?</h2>
+    <p style="color:var(--text-medium);margin-bottom:20px;">This will erase all scores and start over. Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReset()">No, Keep Playing</button>
+      <button class="btn-danger" onclick="doReset()">Yes, Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= MILESTONE POPUP ======= -->
+<div class="milestone-popup" id="milestone-popup">
+  <div class="milestone-content" id="milestone-content"></div>
+</div>
+
+<!-- ======= CONFETTI CONTAINER ======= -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ==========================================
+// DATA
+// ==========================================
+const COLORS = [
+  { name: 'Sky Blue', hex: '#4FC3F7' },
+  { name: 'Forest Green', hex: '#66BB6A' },
+  { name: 'Sunset Orange', hex: '#FFA726' },
+  { name: 'Berry Purple', hex: '#AB47BC' },
+  { name: 'Coral', hex: '#FF7043' },
+  { name: 'Golden', hex: '#FFD54F' }
+];
+
+const DEFAULT_PLAYERS = [
+  { name: 'Alex', colorIndex: 0 },
+  { name: 'Julia', colorIndex: 3 },
+  { name: 'Evie', colorIndex: 1 }
+];
+
+const ROAD_TRIP_ITEMS = {
+  easy: [
+    { emoji: '🏚️', name: 'Red Barn', points: 1 },
+    { emoji: '🐄', name: 'Cow or Horse', points: 1 },
+    { emoji: '🇺🇸', name: 'American Flag', points: 1 },
+    { emoji: '⛪', name: 'Church with Steeple', points: 1 },
+    { emoji: '🏞️', name: 'River or Creek', points: 1 },
+    { emoji: '🚛', name: 'Big Truck (18-wheeler)', points: 1 },
+    { emoji: '🍔', name: 'Fast Food Sign', points: 1 },
+    { emoji: '🌉', name: 'Bridge', points: 1 },
+    { emoji: '⛰️', name: 'Mountain View', points: 1 },
+    { emoji: '🚧', name: 'Road Construction', points: 1 },
+    { emoji: '🥞', name: 'Pancake House', points: 1 },
+    { emoji: '🏎️', name: 'Go-Kart Track', points: 1 }
+  ],
+  medium: [
+    { emoji: '🏡', name: 'Log Cabin', points: 3 },
+    { emoji: '🏍️', name: 'Motorcycle Group (3+)', points: 3 },
+    { emoji: '🚐', name: 'RV or Camper', points: 3 },
+    { emoji: '🗼', name: 'Water Tower', points: 3 },
+    { emoji: '🌾', name: 'Hay Bales', points: 3 },
+    { emoji: '🚇', name: 'Tunnel', points: 3 },
+    { emoji: '🎢', name: 'Billboard for Dollywood', points: 3 },
+    { emoji: '🪨', name: '"See Rock City" Sign', points: 3 },
+    { emoji: '🦌', name: 'Deer Crossing Sign', points: 3 },
+    { emoji: '🐕', name: 'Pickup Truck with Dog', points: 3 },
+    { emoji: '🎡', name: 'The Island Ferris Wheel', points: 3 },
+    { emoji: '🐻', name: 'Bear Statue or Carving', points: 3 },
+    { emoji: '🍭', name: 'Candy Store or Fudge Shop', points: 3 }
+  ],
+  hard: [
+    { emoji: '🐻', name: 'Actual Wildlife', points: 5 },
+    { emoji: '💧', name: 'Waterfall from Road', points: 5 },
+    { emoji: '🚂', name: 'Train or Tracks', points: 5 },
+    { emoji: '📜', name: 'Historical Marker', points: 5 },
+    { emoji: '🚗', name: 'Far-away License Plate', points: 5 },
+    { emoji: '🦅', name: 'Hawk or Eagle Flying', points: 5 },
+    { emoji: '🎿', name: 'Mountain Coaster Sign', points: 5 },
+    { emoji: '🫙', name: 'Ole Smoky Moonshine', points: 5 }
+  ]
+};
+
+const DOLLYWOOD_ITEMS = {
+  easy: [
+    { emoji: '🎤', name: 'Dolly Parton Statue/Pic', points: 1 },
+    { emoji: '🦋', name: 'Butterfly', points: 1 },
+    { emoji: '🚂', name: 'Steam Train', points: 1 },
+    { emoji: '🍩', name: 'Someone Eating Funnel Cake', points: 1 },
+    { emoji: '🎁', name: 'Gift Shop', points: 1 },
+    { emoji: '🎢', name: 'Roller Coaster', points: 1 },
+    { emoji: '⛲', name: 'Water Fountain', points: 1 },
+    { emoji: '🎵', name: 'Live Musician', points: 1 },
+    { emoji: '👶', name: 'Baby in Stroller', points: 1 },
+    { emoji: '🗺️', name: 'Park Map', points: 1 }
+  ],
+  medium: [
+    { emoji: '🍞', name: 'Cinnamon Bread Stand', points: 3 },
+    { emoji: '🪕', name: 'Banjo or Fiddle Player', points: 3 },
+    { emoji: '🦅', name: 'Bald Eagle (Sanctuary)', points: 3 },
+    { emoji: '🔨', name: 'Blacksmith at Work', points: 3 },
+    { emoji: '🪑', name: 'Wooden Rocking Chair', points: 3 },
+    { emoji: '🤠', name: 'Cowboy Boots on Someone', points: 3 },
+    { emoji: '🌊', name: 'Log Flume Splash', points: 3 },
+    { emoji: '🍬', name: 'Candy Being Made', points: 3 },
+    { emoji: '🎠', name: 'Carousel Horse', points: 3 },
+    { emoji: '🎨', name: 'Face Painting', points: 3 }
+  ],
+  hard: [
+    { emoji: '🦃', name: 'Wild Turkey Roaming', points: 5 },
+    { emoji: '💬', name: 'Dolly Quote on a Sign', points: 5 },
+    { emoji: '🔥', name: 'Glass Blower / Candle Maker', points: 5 },
+    { emoji: '⚡', name: 'Lightning Rod Launching', points: 5 },
+    { emoji: '🎶', name: 'Someone Playing Dulcimer', points: 5 },
+    { emoji: '🤳', name: 'Family Selfie at Entrance', points: 5 },
+    { emoji: '🎉', name: 'All 3 of You on a Ride!', points: 5 }
+  ]
+};
+
+const MILESTONES = [
+  {
+    points: 25,
+    emoji: '🏔️',
+    title: 'Mountain Explorers!',
+    text: 'Fun fact: The Great Smoky Mountains get their name from the natural fog that hangs over the range. The Cherokee called them "Shaconage" — place of the blue smoke! The Smokies are home to over 1,500 types of wildflowers and 200 species of birds!'
+  },
+  {
+    points: 50,
+    emoji: '🎢',
+    title: 'Thrill Seekers!',
+    text: 'Fun fact: Dollywood opened in 1986 and has over 50 rides and attractions! It started as a small attraction called "Rebel Railroad" in 1961. Dollywood makes over 15,000 loaves of their famous cinnamon bread every single week!'
+  },
+  {
+    points: 75,
+    emoji: '🎤',
+    title: 'Dolly Fans!',
+    text: 'Fun fact: Dolly Parton grew up one of 12 kids in a one-room cabin in the Smoky Mountains! She started performing on TV at age 10 and wrote her first song at age 5. Her Imagination Library has given away over 200 million free books to kids!'
+  },
+  {
+    points: 100,
+    emoji: '🏆',
+    title: '🎉 SPY MASTERS! 🎉',
+    text: 'You did it! You are officially Smoky Mountain Spy Masters! What an incredible team — you spotted over 100 points of amazing things together! This trip will be one to remember forever!'
+  }
+];
+
+// ==========================================
+// STATE
+// ==========================================
+const STORAGE_KEY = 'smoky-mountain-spy-quest';
+
+let state = {
+  started: false,
+  currentMode: null, // 'roadtrip' | 'dollywood'
+  hasSelectedMode: false,
+  players: DEFAULT_PLAYERS.map((p, i) => ({
+    name: p.name,
+    colorIndex: p.colorIndex,
+    scores: { roadtrip: 0, dollywood: 0 }
+  })),
+  claims: { roadtrip: {}, dollywood: {} }, // { mode: { "itemIndex-tier": playerIndex } }
+  wildCards: [], // { text, playerIndex, approved, mode, timestamp }
+  milestonesShown: { roadtrip: [], dollywood: [] }
+};
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Merge with defaults in case we add new fields
+      state = { ...state, ...parsed };
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+// ==========================================
+// INIT
+// ==========================================
+function init() {
+  const hadState = loadState();
+  if (hadState && state.started) {
+    if (state.currentMode) {
+      showScreen('game-screen');
+      renderGame();
+    } else {
+      showScreen('mode-screen');
+      document.getElementById('back-to-game-btn').style.display = 'none';
+    }
+  } else {
+    renderPlayerSetup();
+    showScreen('start-screen');
+  }
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ==========================================
+// START SCREEN
+// ==========================================
+function renderPlayerSetup() {
+  const container = document.getElementById('player-setup');
+  container.innerHTML = '';
+
+  state.players.forEach((player, pIdx) => {
+    const card = document.createElement('div');
+    card.className = 'player-card-setup';
+    card.innerHTML = `
+      <label>Player ${pIdx + 1}</label>
+      <input type="text" value="${player.name}" data-player="${pIdx}" placeholder="Enter name" maxlength="12">
+      <div class="color-options" data-player="${pIdx}">
+        ${COLORS.map((c, cIdx) => {
+          const taken = state.players.some((p, pi) => pi !== pIdx && p.colorIndex === cIdx);
+          const selected = player.colorIndex === cIdx;
+          return `<button class="color-btn ${selected ? 'selected' : ''} ${taken ? 'taken' : ''}"
+            style="background:${c.hex}" data-color="${cIdx}" data-player="${pIdx}"
+            onclick="pickColor(${pIdx}, ${cIdx})" title="${c.name}"></button>`;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // Bind name inputs
+  container.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      state.players[parseInt(e.target.dataset.player)].name = e.target.value.trim() || `Player ${parseInt(e.target.dataset.player) + 1}`;
+    });
+  });
+}
+
+function pickColor(playerIdx, colorIdx) {
+  // Check if taken
+  if (state.players.some((p, pi) => pi !== playerIdx && p.colorIndex === colorIdx)) return;
+  state.players[playerIdx].colorIndex = colorIdx;
+  renderPlayerSetup();
+}
+
+function startGame() {
+  // Validate names
+  state.players.forEach((p, i) => {
+    if (!p.name) p.name = DEFAULT_PLAYERS[i].name;
+  });
+  state.started = true;
+  state.hasSelectedMode = false;
+  saveState();
+  showScreen('mode-screen');
+  document.getElementById('back-to-game-btn').style.display = 'none';
+}
+
+// ==========================================
+// MODE SELECT
+// ==========================================
+function selectMode(mode) {
+  state.currentMode = mode;
+  state.hasSelectedMode = true;
+  saveState();
+  showScreen('game-screen');
+  renderGame();
+}
+
+function switchMode(mode) {
+  state.currentMode = mode;
+  saveState();
+  renderGame();
+}
+
+function switchModeFromSettings() {
+  closeSettings();
+  showScreen('mode-screen');
+  document.getElementById('back-to-game-btn').style.display = 'block';
+}
+
+function backToGame() {
+  if (state.currentMode) {
+    showScreen('game-screen');
+    renderGame();
+  }
+}
+
+// ==========================================
+// GAME BOARD
+// ==========================================
+function getItems(mode) {
+  return mode === 'roadtrip' ? ROAD_TRIP_ITEMS : DOLLYWOOD_ITEMS;
+}
+
+function getTeamScore(mode) {
+  return state.players.reduce((sum, p) => sum + (p.scores[mode] || 0), 0);
+}
+
+function getTotalTeamScore() {
+  return state.players.reduce((sum, p) => sum + (p.scores.roadtrip || 0) + (p.scores.dollywood || 0), 0);
+}
+
+function renderGame() {
+  renderScoreboard();
+  renderModeSwitcher();
+  renderItems();
+}
+
+function renderScoreboard() {
+  const mode = state.currentMode;
+  const teamScore = getTotalTeamScore();
+  const maxMilestone = MILESTONES[MILESTONES.length - 1].points;
+
+  const sb = document.getElementById('scoreboard');
+  const playerTotals = state.players.map(p => (p.scores.roadtrip || 0) + (p.scores.dollywood || 0));
+  const maxScore = Math.max(...playerTotals);
+
+  sb.innerHTML = `
+    <div class="scoreboard-players">
+      ${state.players.map((p, i) => {
+        const pTotal = playerTotals[i];
+        const crown = (maxScore > 0 && pTotal === maxScore) ? '\u{1F451} ' : '';
+        return `
+        <div class="scoreboard-player">
+          <div class="scoreboard-dot" style="background:${COLORS[p.colorIndex].hex}"></div>
+          <span>${crown}${p.name}</span>
+          <strong class="scoreboard-score" style="font-size:1.1rem;color:${COLORS[p.colorIndex].hex}">${pTotal}</strong>
+        </div>
+      `}).join('')}
+    </div>
+    <div class="scoreboard-team">
+      Team Score: <strong>${teamScore}</strong>
+      <div class="milestone-bar">
+        <div class="milestone-fill" style="width:${Math.min(100, (teamScore / maxMilestone) * 100)}%"></div>
+        <div class="milestone-markers">
+          ${MILESTONES.map(m => `
+            <div class="milestone-marker ${teamScore >= m.points ? 'reached' : ''}"
+              style="left:${(m.points / maxMilestone) * 100}%"
+              title="${m.points} pts">${m.emoji.slice(0,2)}</div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderModeSwitcher() {
+  document.querySelectorAll('.mode-switch-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === state.currentMode);
+  });
+}
+
+function renderItems() {
+  const mode = state.currentMode;
+  const items = getItems(mode);
+  const container = document.getElementById('game-items');
+
+  const sections = [
+    { key: 'easy', label: 'Easy Finds', starLabel: '1⭐', cssClass: 'easy' },
+    { key: 'medium', label: 'Tricky Spots', starLabel: '3⭐', cssClass: 'medium' },
+    { key: 'hard', label: 'Eagle Eye Challenge', starLabel: '5⭐', cssClass: 'hard' }
+  ];
+
+  container.innerHTML = sections.map(section => {
+    const sectionItems = items[section.key] || [];
+    const totalInSection = sectionItems.length;
+    const claimedInSection = sectionItems.filter((_, idx) => {
+      const ck = `${idx}-${section.key}`;
+      return state.claims[mode]?.[ck] !== undefined && state.claims[mode]?.[ck] !== null;
+    }).length;
+    return `
+    <div class="section-header ${section.cssClass}">
+      <span>${section.label}</span>
+      <span class="section-count">(${claimedInSection}/${totalInSection})</span>
+      <span style="margin-left:auto;font-size:0.9rem;">${section.starLabel}</span>
+    </div>
+    <div class="item-grid">
+      ${items[section.key].map((item, idx) => {
+        const claimKey = `${idx}-${section.key}`;
+        const claimer = state.claims[mode]?.[claimKey];
+        const isClaimed = claimer !== undefined && claimer !== null;
+        const claimerPlayer = isClaimed ? state.players[claimer] : null;
+
+        return `
+          <div class="item-card ${isClaimed ? 'claimed' : ''}" data-key="${claimKey}">
+            <div class="item-emoji">${item.emoji}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-points">${'⭐'.repeat(item.points <= 1 ? 1 : item.points <= 3 ? 2 : 3)} ${item.points} pt${item.points > 1 ? 's' : ''}</div>
+            ${isClaimed ? `
+              <div class="claimed-overlay">
+                <div class="check">✅</div>
+                <div class="claimer-name" style="color:${COLORS[claimerPlayer.colorIndex].hex}">${claimerPlayer.name}</div>
+                <button class="unclaim-btn" onclick="unclaimItem('${claimKey}', ${item.points}, ${claimer})">undo</button>
+              </div>
+            ` : `
+              <div class="claim-buttons">
+                ${state.players.map((p, pi) => `
+                  <button class="claim-btn" style="border-color:${COLORS[p.colorIndex].hex};color:${COLORS[p.colorIndex].hex}"
+                    onclick="claimItem('${claimKey}', ${item.points}, ${pi}, this)">
+                    ${p.name.slice(0, 1).toUpperCase()}
+                  </button>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `}).join('');
+}
+
+function claimItem(claimKey, points, playerIdx, btnEl) {
+  // Double-tap protection
+  if (window._claimCooldown) return;
+  window._claimCooldown = true;
+  setTimeout(() => window._claimCooldown = false, 300);
+
+  const mode = state.currentMode;
+  if (!state.claims[mode]) state.claims[mode] = {};
+  if (state.claims[mode][claimKey] !== undefined) return;
+
+  state.claims[mode][claimKey] = playerIdx;
+  state.players[playerIdx].scores[mode] = (state.players[playerIdx].scores[mode] || 0) + points;
+  saveState();
+
+  // Haptic feedback
+  if (navigator.vibrate) navigator.vibrate(50);
+
+  // Star burst at button position
+  if (btnEl) {
+    const rect = btnEl.getBoundingClientRect();
+    createStarBurst(rect.left + rect.width/2, rect.top + rect.height/2, COLORS[state.players[playerIdx].colorIndex].hex);
+  }
+
+  renderGame();
+  checkMilestones();
+  checkModeComplete();
+}
+
+function unclaimItem(claimKey, points, playerIdx) {
+  const mode = state.currentMode;
+  if (state.claims[mode][claimKey] === undefined) return;
+  delete state.claims[mode][claimKey];
+  state.players[playerIdx].scores[mode] = Math.max(0, (state.players[playerIdx].scores[mode] || 0) - points);
+  saveState();
+  renderGame();
+}
+
+// ==========================================
+// MODE COMPLETION
+// ==========================================
+function checkModeComplete() {
+  const mode = state.currentMode;
+  const items = getItems(mode);
+  const totalItems = (items.easy?.length || 0) + (items.medium?.length || 0) + (items.hard?.length || 0);
+
+  let claimedCount = 0;
+  ['easy', 'medium', 'hard'].forEach(tier => {
+    (items[tier] || []).forEach((_, idx) => {
+      const ck = `${idx}-${tier}`;
+      if (state.claims[mode]?.[ck] !== undefined && state.claims[mode]?.[ck] !== null) {
+        claimedCount++;
+      }
+    });
+  });
+
+  if (claimedCount === totalItems && totalItems > 0) {
+    // Only show once per mode
+    const completeKey = `_modeComplete_${mode}`;
+    if (window[completeKey]) return;
+    window[completeKey] = true;
+
+    const modeName = mode === 'roadtrip' ? 'Road Trip' : 'Dollywood';
+    launchConfetti(60);
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
+
+    // Show completion modal reusing milestone popup
+    const popup = document.getElementById('milestone-popup');
+    const content = document.getElementById('milestone-content');
+    content.innerHTML = `
+      <div class="ms-emoji">\u{1F389}</div>
+      <h2>${modeName} Complete!</h2>
+      <p>You found everything! Amazing teamwork!</p>
+      <button onclick="closeMilestone()">Awesome!</button>
+    `;
+    popup.classList.add('active');
+  }
+}
+
+// ==========================================
+// MILESTONES
+// ==========================================
+function checkMilestones() {
+  const totalScore = getTotalTeamScore();
+  const allShown = [...(state.milestonesShown.roadtrip || []), ...(state.milestonesShown.dollywood || [])];
+
+  for (const ms of MILESTONES) {
+    if (totalScore >= ms.points && !allShown.includes(ms.points)) {
+      // Mark shown globally (put under current mode but check combined)
+      if (!state.milestonesShown[state.currentMode]) state.milestonesShown[state.currentMode] = [];
+      state.milestonesShown[state.currentMode].push(ms.points);
+      saveState();
+
+      showMilestone(ms);
+      break; // Show one at a time
+    }
+  }
+}
+
+function showMilestone(ms) {
+  const popup = document.getElementById('milestone-popup');
+  const content = document.getElementById('milestone-content');
+
+  content.innerHTML = `
+    <div class="ms-emoji">${ms.emoji}</div>
+    <h2>${ms.title}</h2>
+    <p>${ms.text}</p>
+    <button onclick="closeMilestone()">Awesome!</button>
+  `;
+
+  popup.classList.add('active');
+
+  // Haptic feedback on milestone
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+  if (ms.points === 100) {
+    launchConfetti(80);
+  } else {
+    launchConfetti(30);
+  }
+}
+
+function closeMilestone() {
+  document.getElementById('milestone-popup').classList.remove('active');
+  // Check if there's another milestone to show
+  setTimeout(checkMilestones, 300);
+}
+
+// ==========================================
+// WILD CARDS
+// ==========================================
+let wildCardPlayerIdx = 0;
+
+function openWildCard() {
+  const modal = document.getElementById('wild-modal');
+  const picker = document.getElementById('wild-player-pick');
+
+  wildCardPlayerIdx = 0;
+  picker.innerHTML = state.players.map((p, i) => `
+    <button class="wild-player-btn ${i === 0 ? 'selected' : ''}"
+      style="border-color:${COLORS[p.colorIndex].hex};color:${COLORS[p.colorIndex].hex};${i === 0 ? 'background:' + COLORS[p.colorIndex].hex : ''}"
+      onclick="selectWildPlayer(${i})">${p.name}</button>
+  `).join('');
+
+  document.getElementById('wild-input').value = '';
+  modal.classList.add('active');
+}
+
+function selectWildPlayer(idx) {
+  wildCardPlayerIdx = idx;
+  document.querySelectorAll('.wild-player-btn').forEach((btn, i) => {
+    const color = COLORS[state.players[i].colorIndex].hex;
+    if (i === idx) {
+      btn.classList.add('selected');
+      btn.style.background = color;
+      btn.style.color = 'white';
+    } else {
+      btn.classList.remove('selected');
+      btn.style.background = 'transparent';
+      btn.style.color = color;
+    }
+  });
+}
+
+function closeWildCard() {
+  document.getElementById('wild-modal').classList.remove('active');
+}
+
+function submitWildCard() {
+  const text = document.getElementById('wild-input').value.trim();
+  if (!text) return;
+
+  closeWildCard();
+
+  // Show vote modal
+  const voteModal = document.getElementById('vote-modal');
+  document.getElementById('vote-description').textContent = `"${text}"`;
+  document.getElementById('vote-spotter').textContent = `Spotted by ${state.players[wildCardPlayerIdx].name}`;
+  voteModal.classList.add('active');
+
+  // Store pending wild card
+  window._pendingWild = { text, playerIndex: wildCardPlayerIdx, mode: state.currentMode };
+}
+
+function voteWild(approved) {
+  document.getElementById('vote-modal').classList.remove('active');
+
+  const wc = window._pendingWild;
+  if (!wc) return;
+
+  wc.approved = approved;
+  wc.timestamp = new Date().toISOString();
+
+  if (approved) {
+    const mode = wc.mode;
+    state.players[wc.playerIndex].scores[mode] = (state.players[wc.playerIndex].scores[mode] || 0) + 3;
+    launchConfetti(15);
+  }
+
+  state.wildCards.push(wc);
+  saveState();
+  renderGame();
+  checkMilestones();
+  window._pendingWild = null;
+}
+
+// ==========================================
+// SETTINGS
+// ==========================================
+function openSettings() {
+  document.getElementById('wild-log-display').style.display = 'none';
+  document.getElementById('trip-summary-display').style.display = 'none';
+  document.getElementById('settings-modal').classList.add('active');
+}
+
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('active');
+}
+
+function showWildLog() {
+  const display = document.getElementById('wild-log-display');
+  const entries = document.getElementById('wild-log-entries');
+
+  if (state.wildCards.length === 0) {
+    entries.innerHTML = '<p style="color:var(--text-medium);font-size:0.9rem;">No wild cards yet! Spot something unexpected!</p>';
+  } else {
+    entries.innerHTML = state.wildCards.map(wc => `
+      <div class="wild-log-entry">
+        <div class="wl-text">${wc.approved ? '✅' : '❌'} "${wc.text}"</div>
+        <div class="wl-meta">${state.players[wc.playerIndex]?.name || 'Unknown'} — ${wc.approved ? '+3 pts' : 'Voted down'} — ${wc.mode === 'roadtrip' ? '🚗' : '🎢'}</div>
+      </div>
+    `).join('');
+  }
+
+  display.style.display = 'block';
+}
+
+function showTripSummary() {
+  const display = document.getElementById('trip-summary-display');
+  const content = document.getElementById('trip-summary-content');
+
+  const rtItems = ROAD_TRIP_ITEMS;
+  const dwItems = DOLLYWOOD_ITEMS;
+  const rtTotal = (rtItems.easy?.length||0) + (rtItems.medium?.length||0) + (rtItems.hard?.length||0);
+  const dwTotal = (dwItems.easy?.length||0) + (dwItems.medium?.length||0) + (dwItems.hard?.length||0);
+
+  let rtClaimed = 0, dwClaimed = 0;
+  ['easy','medium','hard'].forEach(tier => {
+    (rtItems[tier]||[]).forEach((_,i) => { if(state.claims.roadtrip?.[`${i}-${tier}`] !== undefined) rtClaimed++; });
+    (dwItems[tier]||[]).forEach((_,i) => { if(state.claims.dollywood?.[`${i}-${tier}`] !== undefined) dwClaimed++; });
+  });
+
+  const playerStats = state.players.map(p => {
+    const total = (p.scores.roadtrip||0) + (p.scores.dollywood||0);
+    return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee">
+      <span style="font-weight:700;color:${COLORS[p.colorIndex].hex}">${p.name}</span>
+      <span>${total} pts (🚗${p.scores.roadtrip||0} + 🎢${p.scores.dollywood||0})</span>
+    </div>`;
+  }).join('');
+
+  const wildApproved = state.wildCards.filter(w => w.approved).length;
+
+  content.innerHTML = `
+    <div style="background:#F5F5F5;border-radius:10px;padding:12px;margin-bottom:10px;">
+      <div style="font-weight:700;margin-bottom:8px;">🚗 Road Trip: ${rtClaimed}/${rtTotal} found</div>
+      <div style="font-weight:700;">🎢 Dollywood: ${dwClaimed}/${dwTotal} found</div>
+    </div>
+    <div style="margin-bottom:10px">${playerStats}</div>
+    <div style="background:#F5F5F5;border-radius:10px;padding:12px;text-align:center;">
+      <div>Team Total: <strong>${getTotalTeamScore()}</strong> pts</div>
+      <div style="color:var(--text-medium);font-size:0.85rem;margin-top:4px;">⭐ ${wildApproved} wild card${wildApproved!==1?'s':''} approved</div>
+    </div>
+  `;
+
+  display.style.display = 'block';
+}
+
+function confirmReset() {
+  closeSettings();
+  document.getElementById('reset-modal').classList.add('active');
+}
+
+function closeReset() {
+  document.getElementById('reset-modal').classList.remove('active');
+}
+
+function doReset() {
+  localStorage.removeItem(STORAGE_KEY);
+  state = {
+    started: false,
+    currentMode: null,
+    hasSelectedMode: false,
+    players: DEFAULT_PLAYERS.map(p => ({
+      name: p.name,
+      colorIndex: p.colorIndex,
+      scores: { roadtrip: 0, dollywood: 0 }
+    })),
+    claims: { roadtrip: {}, dollywood: {} },
+    wildCards: [],
+    milestonesShown: { roadtrip: [], dollywood: [] }
+  };
+  closeReset();
+  renderPlayerSetup();
+  showScreen('start-screen');
+}
+
+// ==========================================
+// ANIMATIONS
+// ==========================================
+function createStarBurst(x, y, color) {
+  const container = document.createElement('div');
+  container.className = 'star-burst';
+  container.style.left = x + 'px';
+  container.style.top = y + 'px';
+
+  const emojis = ['⭐', '✨', '🌟', '💫'];
+  for (let i = 0; i < 8; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'star-particle';
+    particle.textContent = emojis[i % emojis.length];
+    const angle = (i / 8) * Math.PI * 2;
+    const dist = 40 + Math.random() * 30;
+    particle.style.animation = `starFly 0.7s ease-out forwards`;
+    particle.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    particle.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    // Inline the final transform since CSS custom properties in keyframes are tricky
+    particle.animate([
+      { transform: 'translate(0,0) scale(1)', opacity: 1 },
+      { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0.3)`, opacity: 0 }
+    ], { duration: 600, easing: 'ease-out', fill: 'forwards' });
+    container.appendChild(particle);
+  }
+
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 700);
+}
+
+function launchConfetti(count) {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#4FC3F7', '#66BB6A', '#FFA726', '#AB47BC', '#FF7043', '#FFD54F', '#EF5350', '#42A5F5'];
+
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size = 6 + Math.random() * 8;
+    const isCircle = Math.random() > 0.5;
+    piece.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${size}px;
+      height: ${isCircle ? size : size * 0.6}px;
+      background: ${color};
+      border-radius: ${isCircle ? '50%' : '2px'};
+      animation-duration: ${1.5 + Math.random() * 2}s;
+      animation-delay: ${Math.random() * 0.5}s;
+    `;
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => {
+    container.innerHTML = '';
+  }, 4000);
+}
+
+// ==========================================
+// GO
+// ==========================================
+init();
+</script>
+</body>
+</html>
